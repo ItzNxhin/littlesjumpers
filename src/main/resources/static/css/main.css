@@ -1,0 +1,113 @@
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    background-image: url('/images/fondo.jpeg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    color: white;
+}
+
+/* Capa oscura sutil para mejorar legibilidad */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(67, 78, 67, 0.45); /* Verde oscuro semi-transparente */
+    z-index: 1;
+}
+
+/* Barra superior */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 80, 0, 0.95);
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn {
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 2px solid white;
+    border-radius: 50px;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: white;
+    color: #006400;
+}
+
+.btn-primary {
+    background: #ffca28;       /* Amarillo típico de lápiz */
+    border-color: #ffca28;
+    color: #006400;
+}
+
+.btn-primary:hover {
+    background: #ffb300;
+    border-color: #ffb300;
+    color: #004d00;
+}
+
+/* Contenido principal (opcional) */
+main {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 20px 60px;
+}
+
+h1 {
+    font-size: 4.5rem;
+    margin-bottom: 20px;
+    text-shadow: 3px 3px 8px rgba(0,0,0,0.7);
+}
+
+p {
+    font-size: 1.5rem;
+    max-width: 800px;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 3rem; }
+    .nav-buttons { gap: 10px; }
+    .btn { padding: 8px 16px; font-size: 0.9rem; }
+}
