@@ -8,6 +8,21 @@ public class Home {
 
     @GetMapping("/")
     public String home() {
-        return "html/main.html";
+        return "html/main";
+    }
+
+    @GetMapping("/admin/dashboard")
+    public String adminDashboard() {
+        return "html/admin/dashboard";
+    }
+
+    @GetMapping("/acudiente/menu")
+    public String acudienteMenu() {
+        return "html/acudiente/menu";
+    }
+
+    @GetMapping("/docente/menu")
+    public String docenteMenu() {
+        return "html/docente/menu";
     }
 }

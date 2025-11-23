@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Regreso a Clases</title>
+    <title>Regreso a Clases - MiColegio</title>
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/login.css}"/>
 </head>
 <body>
 
     <header>
         <a href="#" class="logo">MiColegio</a>
         <div class="nav-buttons">
-            <button class="btn" onclick="alert('Función Iniciar Sesión')">Iniciar Sesión</button>
+            <button class="btn" id="btnIniciarSesion">Iniciar Sesión</button>
             <button class="btn btn-primary" onclick="alert('Función Inscripción')">Inscripción</button>
         </div>
     </header>
@@ -20,5 +21,66 @@
         <h1>¡Bienvenidos de Vuelta!</h1>
         <p>Prepárate para un nuevo año lleno de aprendizajes, aventuras y muchos éxitos.</p>
     </main>
+
+    <!-- Modal de Login -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Inicio de Sesión</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Panel de Bienvenida -->
+                <div class="welcome-panel">
+                    <div class="welcome-icon">🎓</div>
+                    <h3>¡Bienvenido!</h3>
+                    <p>Accede a tu cuenta para gestionar toda la información académica de manera fácil y segura.</p>
+                    <p><strong>¿Nuevo aquí?</strong></p>
+                    <p>Contacta con la administración para obtener tus credenciales de acceso y comenzar a utilizar el sistema.</p>
+                </div>
+
+                <!-- Panel de Login -->
+                <div class="login-panel">
+                    <form id="loginForm" class="login-form">
+                        <div id="errorMessage" class="error-message"></div>
+                        <div id="successMessage" class="success-message"></div>
+
+                        <div class="form-group">
+                            <label for="username">Usuario</label>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                placeholder="Ingrese su usuario"
+                                required
+                                autocomplete="username"
+                            />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Contraseña</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Ingrese su contraseña"
+                                required
+                                autocomplete="current-password"
+                            />
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-login" id="btnLogin">
+                                Ingresar
+                            </button>
+                            <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/login.js}"></script>
 </body>
 </html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Docente - MiColegio</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">MiColegio - Docente</a>
+        <div class="nav-buttons">
+            <span class="user-info" id="userInfo">Bienvenido, Profesor</span>
+            <button class="btn" id="btnCerrarSesion">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <aside class="sidebar">
+            <h3>Menú Docente</h3>
+            <nav class="menu">
+                <a href="#" class="menu-item active" data-section="mis-cursos">
+                    <span class="icon">📚</span>
+                    <span>Mis Cursos</span>
+                </a>
+                <a href="#" class="menu-item" data-section="estudiantes">
+                    <span class="icon">👨‍🎓</span>
+                    <span>Estudiantes</span>
+                </a>
+                <a href="#" class="menu-item" data-section="calificaciones">
+                    <span class="icon">📝</span>
+                    <span>Calificaciones</span>
+                </a>
+                <a href="#" class="menu-item" data-section="perfil">
+                    <span class="icon">👤</span>
+                    <span>Mi Perfil</span>
+                </a>
+            </nav>
+        </aside>
+
+        <section class="content">
+            <!-- Sección Mis Cursos -->
+            <div id="mis-cursos" class="section active">
+                <h2>Mis Cursos</h2>
+                <p class="section-description">Selecciona un curso para gestionar su información</p>
+
+                <div class="course-list">
+                    <div class="empty-state-card">
+                        <div class="icon">📖</div>
+                        <p>No hay cursos asignados</p>
+                        <small>Contacte con la administración para la asignación de cursos</small>
+                    </div>
+                </div>
+
+                <!-- Panel de opciones del curso (se muestra al seleccionar) -->
+                <div id="courseOptions" class="course-options" style="display: none;">
+                    <h3>Curso: <span id="selectedCourseName"></span></h3>
+                    <div class="card-grid">
+                        <div class="card">
+                            <div class="card-icon">👥</div>
+                            <h3>Lista de Estudiantes</h3>
+                            <p>Ver y gestionar estudiantes del curso</p>
+                            <button class="btn btn-primary">Ver Lista</button>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">📊</div>
+                            <h3>Calificaciones</h3>
+                            <p>Registrar y consultar calificaciones</p>
+                            <button class="btn btn-primary">Gestionar</button>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">📅</div>
+                            <h3>Asistencia</h3>
+                            <p>Tomar y ver asistencia del curso</p>
+                            <button class="btn btn-primary">Gestionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección Estudiantes -->
+            <div id="estudiantes" class="section">
+                <h2>Todos los Estudiantes</h2>
+                <p class="section-description">Muestra todos los estudiantes de tus cursos asignados</p>
+
+                <div class="actions-bar">
+                    <input type="search" placeholder="Buscar estudiante..." class="search-input">
+                    <select class="filter-select">
+                        <option value="">Todos los cursos</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Curso</th>
+                                <th>Promedio</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="empty-state">No hay estudiantes registrados</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Sección Calificaciones -->
+            <div id="calificaciones" class="section">
+                <h2>Gestión de Calificaciones</h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-icon">✍️</div>
+                        <h3>Registrar Notas</h3>
+                        <p>Ingresar nuevas calificaciones</p>
+                        <button class="btn btn-primary">Registrar</button>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">📊</div>
+                        <h3>Ver Reportes</h3>
+                        <p>Consultar reportes de calificaciones</p>
+                        <button class="btn btn-primary">Ver Reportes</button>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">📈</div>
+                        <h3>Estadísticas</h3>
+                        <p>Ver estadísticas del rendimiento</p>
+                        <button class="btn btn-primary">Ver Estadísticas</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección Perfil -->
+            <div id="perfil" class="section">
+                <h2>Mi Perfil</h2>
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar">👨‍🏫</div>
+                        <div class="profile-info">
+                            <h3 id="profileName">Nombre del Profesor</h3>
+                            <p id="profileEmail">correo@ejemplo.com</p>
+                        </div>
+                    </div>
+                    <div class="profile-details">
+                        <div class="detail-row">
+                            <span class="label">Usuario:</span>
+                            <span class="value" id="profileUsername">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Rol:</span>
+                            <span class="value">Docente</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Especialidad:</span>
+                            <span class="value" id="profileSpecialty">-</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">Editar Perfil</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>
