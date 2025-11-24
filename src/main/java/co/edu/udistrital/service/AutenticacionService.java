@@ -24,7 +24,7 @@ public class AutenticacionService {
         try {
             // 1. Consultar usuario en la base de datos
             Cuenta cuenta = cuentaRepository.findByNombreUsuario(loginRequest.getUsername())
-                    .orElseThrow(() -> new CredencialesInvalidasException("Usuario o contraseña incorrectos"));
+                    .orElseThrow(() -> new CredencialesInvalidasException("El usuario no existe"));
 
             // 2. Validar credenciales
             if (!cuenta.getContrasena().equals(loginRequest.getPassword())) {

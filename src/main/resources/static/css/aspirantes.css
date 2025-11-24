@@ -1,0 +1,310 @@
+/* Modal de Aspirantes - Verificación y Registro */
+
+/* Reutiliza estilos base del modal de login */
+#aspirantesModal .modal-content {
+    max-width: 1000px;
+}
+
+/* Panel de información */
+.info-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(0, 100, 0, 0.1), rgba(255, 202, 40, 0.1));
+    border-radius: 15px;
+}
+
+.info-panel h3 {
+    color: #006400;
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.info-panel p {
+    color: #333;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-shadow: none;
+    margin-bottom: 10px;
+}
+
+.info-icon {
+    font-size: 5rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Panel de formularios */
+.form-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Contenedores de formularios - ocupan el mismo espacio */
+#verificacionFormContainer,
+#registroFormContainer {
+    width: 100%;
+    transition: opacity 0.3s ease;
+}
+
+/* Formulario de verificación */
+#verificacionFormContainer {
+    display: block;
+    animation: slideInFromLeft 0.4s ease;
+}
+
+#verificacionFormContainer.hidden {
+    display: none;
+}
+
+#verificacionForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Formulario de registro (inicialmente oculto) */
+#registroFormContainer {
+    display: none;
+}
+
+#registroFormContainer.active {
+    display: block;
+    animation: slideInFromRight 0.4s ease;
+}
+
+#registroForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Animaciones de transición entre formularios */
+@keyframes slideInFromLeft {
+    from {
+        transform: translateX(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Campos deshabilitados (nombre y cédula pre-llenados) */
+.form-group input:disabled {
+    background-color: #f5f5f5;
+    color: #666;
+    cursor: not-allowed;
+}
+
+/* Mensaje informativo */
+.info-message {
+    background: #e3f2fd;
+    color: #1565c0;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid #1565c0;
+    display: none;
+    margin-bottom: 15px;
+}
+
+.info-message.active {
+    display: block;
+}
+
+/* Mensaje de advertencia */
+.warning-message {
+    background: #fff3e0;
+    color: #e65100;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid #e65100;
+    display: none;
+    margin-bottom: 15px;
+}
+
+.warning-message.active {
+    display: block;
+}
+
+/* Botón de verificar */
+.btn-verificar {
+    padding: 14px;
+    background: linear-gradient(135deg, #1565c0, #1976d2);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-verificar:hover {
+    background: linear-gradient(135deg, #0d47a1, #1565c0);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(21, 101, 192, 0.3);
+}
+
+.btn-verificar:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Botón de registrar */
+.btn-registrar {
+    padding: 14px;
+    background: linear-gradient(135deg, #006400, #008000);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-registrar:hover {
+    background: linear-gradient(135deg, #004d00, #006400);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 100, 0, 0.3);
+}
+
+.btn-registrar:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Botón de volver */
+.btn-volver {
+    padding: 12px;
+    background: transparent;
+    color: #666;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-volver:hover {
+    background: #f5f5f5;
+    border-color: #999;
+    color: #333;
+}
+
+/* Sección de botones */
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* Estados del formulario */
+.form-verificacion.hidden,
+.form-registro.hidden {
+    display: none;
+}
+
+/* Animación de transición */
+@keyframes slideIn {
+    from {
+        transform: translateX(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.form-registro.active {
+    animation: slideIn 0.4s ease;
+}
+
+/* Indicador de paso */
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.step {
+    width: 40px;
+    height: 4px;
+    background: #ddd;
+    border-radius: 2px;
+    transition: background 0.3s ease;
+}
+
+.step.active {
+    background: #006400;
+}
+
+/* Título del formulario */
+.form-title {
+    color: #006400;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Campos obligatorios */
+.form-group label::after {
+    content: " *";
+    color: #c62828;
+}
+
+/* Validación en tiempo real */
+.form-group input:invalid:not(:placeholder-shown) {
+    border-color: #c62828;
+}
+
+.form-group input:valid:not(:placeholder-shown) {
+    border-color: #2e7d32;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modal-body {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .info-panel {
+        order: 2;
+    }
+
+    .form-panel {
+        order: 1;
+    }
+
+    .modal-header h2 {
+        font-size: 1.4rem;
+    }
+
+    .info-panel h3 {
+        font-size: 1.5rem;
+    }
+}
