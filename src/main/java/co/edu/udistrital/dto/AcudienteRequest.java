@@ -8,6 +8,17 @@ public class AcudienteRequest {
     private String correo;
     private String contacto_extra;
     
+    public AcudienteRequest(){
+    }
+    
+    public AcudienteRequest(String nombre, String apellido, String cedula, String correo, String contacto_extra) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.cedula = cedula;
+        this.correo = correo;
+        this.contacto_extra = contacto_extra;
+    }
+
     public AcudienteRequest(String cedula) {
         this.cedula = cedula;
     }

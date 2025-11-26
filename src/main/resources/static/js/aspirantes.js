@@ -205,15 +205,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(datos)
+                body: JSON.stringify({
+                    nombre: datos.nombre,
+                    cedula: datos.cedula,
+                    apellido: datos.apellido,
+                    correo: datos.correo,
+                    contacto_extra: datos.contacto_extra
+                })
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al registrar');
-            }
+            const data = await response.json();
+            console.log(data);
 
-            const resultado = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || 'Error al registrar');
+            }
 
             // Registro exitoso
             mostrarExito('¡Registro exitoso! Redirigiendo al formulario de inscripción...');
