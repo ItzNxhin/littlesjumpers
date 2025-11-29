@@ -106,6 +106,7 @@
                     <div class="step-indicator">
                         <div class="step active" id="step1"></div>
                         <div class="step" id="step2"></div>
+                        <div class="step" id="step3"></div>
                     </div>
 
                     <!-- Mensajes -->
@@ -219,6 +220,85 @@
                                     Registrar
                                 </button>
                                 <button type="button" class="btn-volver" id="btnVolver">
+                                    Volver
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Formulario de Registro de Estudiante (inicialmente oculto) -->
+                    <div id="estudianteFormContainer" class="hidden">
+                        <h3 class="form-title">Registro de Estudiante</h3>
+                        <p class="form-subtitle">Por favor, ingrese los datos del estudiante aspirante</p>
+                        <form id="estudianteForm">
+                            <input type="hidden" id="acudiente_id" name="acudiente_id" />
+
+                            <div class="form-group">
+                                <label for="nombreEstudiante">Nombre del Estudiante <span class="required">*</span></label>
+                                <input
+                                    type="text"
+                                    id="nombreEstudiante"
+                                    name="nombre"
+                                    placeholder="Ingrese el nombre del estudiante"
+                                    required
+                                    autocomplete="given-name"
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="apellidoEstudiante">Apellido del Estudiante <span class="required">*</span></label>
+                                <input
+                                    type="text"
+                                    id="apellidoEstudiante"
+                                    name="apellido"
+                                    placeholder="Ingrese el apellido del estudiante"
+                                    required
+                                    autocomplete="family-name"
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tarjetaIdentidad">Tarjeta de Identidad</label>
+                                <input
+                                    type="text"
+                                    id="tarjetaIdentidad"
+                                    name="tarjeta_identidad"
+                                    placeholder="Número de documento (opcional)"
+                                    maxlength="15"
+                                    autocomplete="off"
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fechaNacimiento">Fecha de Nacimiento <span class="required">*</span></label>
+                                <input
+                                    type="date"
+                                    id="fechaNacimiento"
+                                    name="fecha_nacimiento"
+                                    required
+                                    autocomplete="bday"
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gradoAplicado">Grado al que Aplica <span class="required">*</span></label>
+                                <select
+                                    id="gradoAplicado"
+                                    name="grado_aplicado"
+                                    required
+                                >
+                                    <option value="">Seleccione un grado</option>
+                                    <option value="parvulos">Párvulos</option>
+                                    <option value="caminadores">Caminadores</option>
+                                    <option value="pre_jardin">Pre-jardín</option>
+                                </select>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-registrar" id="btnRegistrarEstudiante">
+                                    Registrar Estudiante
+                                </button>
+                                <button type="button" class="btn-volver" id="btnVolverDesdeEstudiante">
                                     Volver
                                 </button>
                             </div>

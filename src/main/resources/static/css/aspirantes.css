@@ -44,7 +44,8 @@
 
 /* Contenedores de formularios - ocupan el mismo espacio */
 #verificacionFormContainer,
-#registroFormContainer {
+#registroFormContainer,
+#estudianteFormContainer {
     width: 100%;
     transition: opacity 0.3s ease;
 }
@@ -282,6 +283,84 @@
 
 .form-group input:valid:not(:placeholder-shown) {
     border-color: #2e7d32;
+}
+
+/* Formulario de estudiante (inicialmente oculto) */
+#estudianteFormContainer {
+    display: none;
+}
+
+#estudianteFormContainer.active {
+    display: block;
+    animation: slideInFromRight 0.4s ease;
+}
+
+#estudianteForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Subtítulo del formulario */
+.form-subtitle {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Campos requeridos - asterisco */
+.required {
+    color: #c62828;
+    font-weight: bold;
+}
+
+/* Estilos para el select de grado */
+.form-group select {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: #006400;
+    box-shadow: 0 0 0 3px rgba(0, 100, 0, 0.1);
+}
+
+.form-group select:invalid {
+    color: #999;
+}
+
+.form-group select option {
+    color: #333;
+}
+
+.form-group select option:first-child {
+    color: #999;
+}
+
+/* Estilos para input type="date" */
+.form-group input[type="date"] {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-group input[type="date"]:focus {
+    outline: none;
+    border-color: #006400;
+    box-shadow: 0 0 0 3px rgba(0, 100, 0, 0.1);
 }
 
 /* Responsive */

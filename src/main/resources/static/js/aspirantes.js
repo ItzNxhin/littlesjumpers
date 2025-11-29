@@ -37,6 +37,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Indicadores de paso
     const step1 = document.getElementById('step1');
     const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+
+    // Formulario de estudiante
+    const estudianteFormContainer = document.getElementById('estudianteFormContainer');
+    const estudianteForm = document.getElementById('estudianteForm');
+    const btnRegistrarEstudiante = document.getElementById('btnRegistrarEstudiante');
+    const btnVolverDesdeEstudiante = document.getElementById('btnVolverDesdeEstudiante');
+
+    // Campos del formulario de estudiante
+    const inputAcudienteId = document.getElementById('acudiente_id');
+    const inputNombreEstudiante = document.getElementById('nombreEstudiante');
+    const inputApellidoEstudiante = document.getElementById('apellidoEstudiante');
+    const inputTarjetaIdentidad = document.getElementById('tarjetaIdentidad');
+    const inputFechaNacimiento = document.getElementById('fechaNacimiento');
+    const inputGradoAplicado = document.getElementById('gradoAplicado');
 
     // ============================================
     // ABRIR Y CERRAR MODAL
@@ -110,15 +125,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const existe = await response.json();
 
             if (existe === true) {
-                // Acudiente existe - redirigir o mostrar siguiente paso
+                // Acudiente existe - mostrar formulario de estudiante
                 mostrarExito('¡Bienvenido! Tu información fue encontrada. Redirigiendo...');
 
                 setTimeout(() => {
-                    // TODO: Redirigir a la página de inscripción de aspirante
-                    // window.location.href = `/aspirantes/registro?cedula=${cedula}`;
-                    console.log('Redirigir a formulario de inscripción de aspirante');
-                    cerrarModal();
-                }, 2000);
+                    mostrarFormularioEstudiante(cedula);
+                }, 1500);
 
             } else {
                 // Acudiente NO existe - mostrar formulario de registro
@@ -221,15 +233,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(data.message || 'Error al registrar');
             }
 
-            // Registro exitoso
-            mostrarExito('¡Registro exitoso! Redirigiendo al formulario de inscripción...');
+            // Registro exitoso - mostrar formulario de estudiante
+            mostrarExito('¡Acudiente registrado! Ahora registre al estudiante...');
 
             setTimeout(() => {
-                // TODO: Redirigir a la página de inscripción de aspirante
-                // window.location.href = `/aspirantes/registro?cedula=${datos.cedula}`;
-                console.log('Redirigir a formulario de inscripción de aspirante');
-                cerrarModal();
-            }, 2000);
+                mostrarFormularioEstudiante(datos.cedula);
+            }, 1500);
 
         } catch (error) {
             console.error('Error al registrar acudiente:', error);
@@ -305,15 +314,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Resetear formularios
         verificacionForm.reset();
         registroForm.reset();
+        estudianteForm.reset();
 
         // Mostrar formulario de verificación
         verificacionFormContainer.classList.remove('hidden');
         registroFormContainer.classList.add('hidden');
         registroFormContainer.classList.remove('active');
+        estudianteFormContainer.classList.add('hidden');
+        estudianteFormContainer.classList.remove('active');
 
         // Resetear indicadores de paso
         step1.classList.add('active');
         step2.classList.remove('active');
+        step3.classList.remove('active');
 
         // Ocultar mensajes
         ocultarMensajes();
@@ -321,6 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Habilitar botones
         btnVerificar.disabled = false;
         btnRegistrar.disabled = false;
+        btnRegistrarEstudiante.disabled = false;
     }
 
     // ============================================
@@ -354,5 +368,128 @@ document.addEventListener('DOMContentLoaded', function() {
 
     inputApellido.addEventListener('input', function() {
         this.value = this.value.replace(/[^a-záéíóúñA-ZÁÉÍÓÚÑ\s]/g, '');
+    });
+
+    // ============================================
+    // FORMULARIO DE ESTUDIANTE
+    // ============================================
+
+    function mostrarFormularioEstudiante(cedulaAcudiente) {
+        // Ocultar formularios anteriores
+        verificacionFormContainer.classList.add('hidden');
+        registroFormContainer.classList.add('hidden');
+        registroFormContainer.classList.remove('active');
+
+        // Mostrar formulario de estudiante
+        estudianteFormContainer.classList.remove('hidden');
+        estudianteFormContainer.classList.add('active');
+
+        // Establecer ID del acudiente
+        inputAcudienteId.value = cedulaAcudiente;
+
+        // Actualizar indicadores de paso
+        step1.classList.remove('active');
+        step2.classList.remove('active');
+        step3.classList.add('active');
+
+        // Mostrar mensaje informativo
+        mostrarInfo('Complete los datos del estudiante aspirante.');
+
+        // Limpiar campos
+        estudianteForm.reset();
+        inputAcudienteId.value = cedulaAcudiente;
+
+        // Enfocar primer campo
+        inputNombreEstudiante.focus();
+    }
+
+    estudianteForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const datosEstudiante = {
+            nombre: inputNombreEstudiante.value.trim(),
+            apellido: inputApellidoEstudiante.value.trim(),
+            tarjeta_identidad: inputTarjetaIdentidad.value.trim(),
+            fecha_nacimiento: inputFechaNacimiento.value,
+            grado_aplicado: inputGradoAplicado.value,
+            acudiente_cedula: inputAcudienteId.value.trim() // Enviar la cédula del acudiente
+        };
+
+        // Validar campos obligatorios
+        if (!datosEstudiante.nombre || !datosEstudiante.apellido || !datosEstudiante.fecha_nacimiento || !datosEstudiante.grado_aplicado) {
+            mostrarError('Por favor, complete todos los campos obligatorios');
+            return;
+        }
+
+        await registrarEstudiante(datosEstudiante);
+    });
+
+    async function registrarEstudiante(datos) {
+        try {
+            // Deshabilitar botón y mostrar loading
+            btnRegistrarEstudiante.disabled = true;
+            btnRegistrarEstudiante.innerHTML = 'Registrando... <span class="spinner"></span>';
+            ocultarMensajes();
+
+            // Hacer petición al backend
+            const response = await fetch('/api/aspirantes/registrarEstudiante', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+            });
+
+            const data = await response.json();
+            console.log(data);
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Error al registrar estudiante');
+            }
+
+            // Registro exitoso
+            mostrarExito('¡Estudiante registrado exitosamente! Proceso de inscripción completado.');
+
+            setTimeout(() => {
+                cerrarModal();
+            }, 2500);
+
+        } catch (error) {
+            console.error('Error al registrar estudiante:', error);
+            mostrarError(error.message || 'Error al registrar estudiante. Por favor, intente nuevamente.');
+        } finally {
+            btnRegistrarEstudiante.disabled = false;
+            btnRegistrarEstudiante.innerHTML = 'Registrar Estudiante';
+        }
+    }
+
+    // Botón volver desde formulario de estudiante
+    btnVolverDesdeEstudiante.addEventListener('click', function() {
+        volverAVerificacion();
+    });
+
+    // Solo letras en nombre de estudiante
+    inputNombreEstudiante.addEventListener('input', function() {
+        this.value = this.value.replace(/[^a-záéíóúñA-ZÁÉÍÓÚÑ\s]/g, '');
+    });
+
+    inputApellidoEstudiante.addEventListener('input', function() {
+        this.value = this.value.replace(/[^a-záéíóúñA-ZÁÉÍÓÚÑ\s]/g, '');
+    });
+
+    // Solo números en tarjeta de identidad
+    inputTarjetaIdentidad.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    // Validar fecha de nacimiento (no futura)
+    inputFechaNacimiento.addEventListener('change', function() {
+        const fechaSeleccionada = new Date(this.value);
+        const hoy = new Date();
+
+        if (fechaSeleccionada > hoy) {
+            mostrarError('La fecha de nacimiento no puede ser futura');
+            this.value = '';
+        }
     });
 });

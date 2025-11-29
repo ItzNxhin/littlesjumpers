@@ -7,7 +7,7 @@ import co.edu.udistrital.model.Grupo;
 import co.edu.udistrital.model.Grupo.Grado;
 
 public class EstudianteResponse {
-    
+
     private int id;
     private String tarjeta_identidad;
     private String nombre;
@@ -16,8 +16,11 @@ public class EstudianteResponse {
     private Grado grado_aplicado;
     private Estado estado;
     private Grupo grupo;
-    private String acudiente_id;
+    private int acudiente_id;
     private String message;
+
+    public EstudianteResponse() {
+    }
 
     public int getId() {
         return id;
@@ -83,11 +86,11 @@ public class EstudianteResponse {
         this.grupo = grupo;
     }
 
-    public String getAcudiente_id() {
+    public int getAcudiente_id() {
         return acudiente_id;
     }
 
-    public void setAcudiente_id(String acudiente_id) {
+    public void setAcudiente_id(int acudiente_id) {
         this.acudiente_id = acudiente_id;
     }
 
