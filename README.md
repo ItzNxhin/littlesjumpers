@@ -531,10 +531,10 @@ Crear archivo `.env` en la raíz del proyecto:
 
 ```env
 # Base de Datos
-DB_HOST=149.130.186.25
-DB_PORT=3306
-DB_NAME=FISColegio
-DB_USERNAME=FISDatabase
+DB_HOST=<tu_host_mysql>
+DB_PORT=<puerto_mysql>
+DB_NAME=<nombre_base_datos>
+DB_USERNAME=<tu_usuario>
 DB_PASSWORD=<tu_contraseña>
 
 # Email Configuration
