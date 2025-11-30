@@ -671,78 +671,6 @@ Contraseña: admin123
 
 ---
 
-## Roadmap
-
-### En Desarrollo Actual
-
-- [x] Sistema de autenticación multi-rol
-- [x] Gestión completa de admisiones
-- [x] Programación de entrevistas
-- [x] Envío de emails automáticos
-- [x] Dashboard administrativo básico
-- [ ] **Completar sección de "Gestión de Aspirantes"** en dashboard
-- [ ] **Implementar templates HTML para emails**
-- [ ] **Hashing de contraseñas** (BCrypt)
-
-### Próximas Funcionalidades
-
-#### Seguridad y Autenticación
-- [ ] Implementar **JWT** para autenticación stateless
-- [ ] Migrar a **BCrypt** para contraseñas
-- [ ] Configurar **Spring Security** completo
-- [ ] Implementar políticas de CORS
-- [ ] Sistema de recuperación de contraseñas
-- [ ] Auditoría de accesos (logs de login)
-
-#### Mejoras de Email
-- [ ] **Envío asíncrono** con `@Async`
-- [ ] Templates HTML profesionales (Thymeleaf)
-- [ ] Cola de emails para retry automático
-- [ ] Tracking de emails enviados
-
-#### Gestión Académica
-- [ ] Panel completo para docentes
-- [ ] Asignación automática de estudiantes a grupos
-- [ ] Control de asistencia
-- [ ] Sistema de calificaciones/evaluaciones
-- [ ] Reportes de progreso académico
-- [ ] Gestión de horarios
-
-#### Gestión Administrativa
-- [ ] Dashboard con estadísticas y gráficos
-- [ ] Reportes de admisiones (PDF/Excel)
-- [ ] Filtros avanzados de búsqueda
-- [ ] Calendario de entrevistas
-- [ ] Historial de cambios de estado
-- [ ] Gestión de pagos/matrículas
-
-#### Mejoras Técnicas
-- [ ] **Tests Unitarios** (JUnit 5)
-- [ ] **Tests de Integración** (TestContainers)
-- [ ] **Documentación API** (Swagger/OpenAPI)
-- [ ] Paginación en listados
-- [ ] Validaciones más robustas
-- [ ] Logging estructurado (SLF4J)
-- [ ] Caché con Redis
-- [ ] Optimización de consultas JPA
-
-#### Frontend
-- [ ] Migrar a framework moderno (React/Vue/Angular)
-- [ ] Diseño responsive mejorado
-- [ ] Componentes reutilizables
-- [ ] Validación de formularios en tiempo real
-- [ ] Notificaciones push
-- [ ] Dark mode
-
-#### DevOps y Despliegue
-- [ ] Dockerización del proyecto
-- [ ] CI/CD con GitHub Actions
-- [ ] Configuración de entornos (dev/staging/prod)
-- [ ] Monitoreo con Spring Actuator
-- [ ] Métricas de rendimiento
-
----
-
 ## Estado del Proyecto
 
 > **IMPORTANTE:** Este proyecto está actualmente **en desarrollo activo** y **NO ha sido completado** aún. Muchas funcionalidades están en proceso de implementación.
@@ -783,8 +711,8 @@ Este es un proyecto académico de la **Universidad Distrital Francisco José de 
 
 ### Equipo de Desarrollo
 
-- **Desarrolladores:** [Agregar nombres]
-- **Profesor/Supervisor:** [Agregar nombre]
+- **Desarrolladores:** Nahin Peñaranda y Anderson Arenas
+- **Profesor/Supervisor:** Henry Diosa
 - **Materia:** Fundamentos de Ingeniería de Software (FIS)
 
 ### Cómo Contribuir
@@ -814,23 +742,12 @@ Este proyecto es de uso **académico** y fue desarrollado como parte de la asign
 
 Para preguntas, sugerencias o reporte de bugs:
 
-- **Issues:** [GitHub Issues](enlace-al-repo)
-- **Email:** [email del equipo]
+- **Issues:** [GitHub Issues](https://github.com/ItzNxhin/littlesjumpers)
+- **Email:** naidavid978@gmail.com
 - **Universidad:** Universidad Distrital Francisco José de Caldas
 
----
-
-## Agradecimientos
-
-- **Universidad Distrital Francisco José de Caldas** por el apoyo académico
-- **Spring Framework** por la excelente documentación
-- **Stack Overflow** y comunidad de desarrolladores Java
-
----
 
 <div align="center">
-
-**Desarrollado con** ☕ **y** 💚 **por estudiantes de Ingeniería de Sistemas**
 
 *Universidad Distrital Francisco José de Caldas - 2025*
 
