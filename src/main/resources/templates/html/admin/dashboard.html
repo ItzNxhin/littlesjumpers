@@ -1,15 +1,16 @@
+<!-- dashboard.html completo modificado -->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrativo - MiColegio</title>
+    <title>Panel de Admisiones - MiColegio</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
 </head>
 <body>
     <header>
-        <a href="#" class="logo">MiColegio - Admin</a>
+        <a href="#" class="logo">MiColegio - Admisiones</a>
         <div class="nav-buttons">
             <span class="user-info" id="userInfo">Bienvenido, Admin</span>
             <button class="btn" id="btnCerrarSesion">Cerrar Sesión</button>
@@ -20,42 +21,24 @@
         <aside class="sidebar">
             <h3>Menú Principal</h3>
             <nav class="menu">
-                <a href="#" class="menu-item active" data-section="asignaciones">
-                    <span class="icon">📋</span>
-                    <span>Asignaciones</span>
-                </a>
                 <a href="#" class="menu-item" data-section="gestion-usuarios">
                     <span class="icon">👥</span>
                     <span>Gestión de Usuarios</span>
                 </a>
-                <a href="#" class="menu-item" data-section="reportes">
-                    <span class="icon">📊</span>
-                    <span>Reportes</span>
+                <a href="#" class="menu-item" data-section="gestion-aspirantes">
+                    <span class="icon">👨‍🎓</span>
+                    <span>Gestión de Aspirantes</span>
+                </a>
+                <a href="#" class="menu-item active" data-section="entrevistas">
+                    <span class="icon">🗣️</span>
+                    <span>Gestión de Entrevistas</span>
                 </a>
             </nav>
         </aside>
 
         <section class="content">
-            <!-- Sección Asignaciones -->
-            <div id="asignaciones" class="section active">
-                <h2>Asignaciones</h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <div class="card-icon">👨‍🏫</div>
-                        <h3>Observador</h3>
-                        <p>Asignar observadores a los estudiantes</p>
-                        <button class="btn btn-primary">Gestionar</button>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon">📚</div>
-                        <h3>Boletines</h3>
-                        <p>Gestionar y asignar boletines académicos</p>
-                        <button class="btn btn-primary">Gestionar</button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Sección Gestión de Usuarios -->
+            <!-- Gestión de Usuarios (se mantiene tal cual estaba) -->
             <div id="gestion-usuarios" class="section">
                 <h2>Gestión de Usuarios</h2>
                 <div class="actions-bar">
@@ -82,26 +65,64 @@
                 </div>
             </div>
 
-            <!-- Sección Reportes -->
-            <div id="reportes" class="section">
-                <h2>Reportes</h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <div class="card-icon">📈</div>
-                        <h3>Estadísticas</h3>
-                        <p>Ver estadísticas generales del sistema</p>
-                        <button class="btn btn-primary">Ver Reporte</button>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon">📄</div>
-                        <h3>Exportar Datos</h3>
-                        <p>Exportar información en diferentes formatos</p>
-                        <button class="btn btn-primary">Exportar</button>
-                    </div>
+            <!-- Gestión de Aspirantes (placeholder por ahora) -->
+            <div id="gestion-aspirantes" class="section">
+                <h2>Gestión de Aspirantes</h2>
+                <p class="section-description">Administración completa de estudiantes aspirantes (registro, edición, etc).</p>
+                <div class="empty-state-card">
+                    <div class="card-icon">🚧</div>
+                    <h3>Sección en desarrollo</h3>
+                    <p>Pronto disponible...</p>
                 </div>
             </div>
+        
+
+            <!-- Gestión de Entrevistas -->
+            <div id="entrevistas" class="section active">
+                <h2>Gestión de Entrevistas</h2>
+                <p class="section-description">Control del proceso de admisión y entrevistas de estudiantes aspirantes.</p>
+                <div class="actions-bar">
+                    <button class="btn btn-primary" onclick="loadEntrevistas()">🔄 Actualizar Lista</button>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="entrevistasTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tarjeta Identidad</th>
+                                <th>Nombre Completo</th>
+                                <th>Fecha Nacimiento</th>
+                                <th>Grado Aplicado</th>
+                                <th>Estado</th>
+                                <th>Fecha Solicitud</th>
+                                <th>Fecha Entrevista</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Se llena con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </section>
     </main>
+
+    <!-- Modal Programar Entrevista -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h3>Programar Entrevista</h3>
+            <p>Seleccione fecha y hora:</p>
+            <input type="datetime-local" id="fechaEntrevistaInput">
+            <div class="actions-bar" style="justify-content: flex-end; margin-top: 20px;">
+                <button class="btn btn-cancelar" id="cancelarModal">Cancelar</button>
+                <button class="btn btn-primary" id="confirmarModal">Confirmar</button>
+                
+            </div>
+        </div>
+    </div>
 
     <script th:src="@{/js/dashboard.js}"></script>
 </body>

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.udistrital.dto.EstudianteResponse;
-import co.edu.udistrital.dto.PreinscripcionRequest;
 import co.edu.udistrital.dto.PreinscripcionResponse;
 import co.edu.udistrital.dto.mapper.EstudianteEntityMapper;
 import co.edu.udistrital.dto.mapper.PreinscripcionEntityMapper;
@@ -71,7 +70,7 @@ public class EntrevistasService {
     @Transactional(readOnly = true)
     public List<PreinscripcionResponse> obtenerPreinscripcionesPorEstado(EstadoEntrevista estado) {
         try {
-            List<Preinscripcion> preinscripciones = preinscripcionRepository.findByEstadoEntrevista(estado);
+            List<Preinscripcion> preinscripciones = preinscripcionRepository.findByEstado(estado);
             return PreinscripcionEntityMapper.toResponseList(preinscripciones);
         } catch (DataAccessException e) {
             throw new DatabaseException("Error al consultar preinscripciones por estado", e);
@@ -106,7 +105,7 @@ public class EntrevistasService {
             Preinscripcion preinscripcion = new Preinscripcion();
             preinscripcion.setEstudiante(estudiante);
             preinscripcion.setFecha_solicitud(LocalDateTime.now());
-            preinscripcion.setEstado_entrevista(EstadoEntrevista.pendiente);
+            preinscripcion.setEstado(EstadoEntrevista.pendiente);
 
             Preinscripcion saved = preinscripcionRepository.save(preinscripcion);
 
@@ -136,7 +135,7 @@ public class EntrevistasService {
             }
 
             preinscripcion.setFecha_entrevista(fechaEntrevista);
-            preinscripcion.setEstado_entrevista(EstadoEntrevista.programada);
+            preinscripcion.setEstado(EstadoEntrevista.programada);
 
             Preinscripcion updated = preinscripcionRepository.save(preinscripcion);
 
@@ -160,11 +159,11 @@ public class EntrevistasService {
 
             Preinscripcion preinscripcion = preinscripcionOpt.get();
 
-            if (preinscripcion.getEstado_entrevista() != EstadoEntrevista.programada) {
+            if (preinscripcion.getEstado() != EstadoEntrevista.programada) {
                 throw new RuntimeException("La entrevista debe estar programada para marcarla como realizada");
             }
 
-            preinscripcion.setEstado_entrevista(EstadoEntrevista.realizada);
+            preinscripcion.setEstado(EstadoEntrevista.realizada);
 
             Preinscripcion updated = preinscripcionRepository.save(preinscripcion);
 
@@ -201,8 +200,8 @@ public class EntrevistasService {
             Preinscripcion preinscripcion = preinscripcionOpt.get();
 
             // Verificar que la entrevista está realizada
-            if (preinscripcion.getEstado_entrevista() != EstadoEntrevista.realizada) {
-                throw new RuntimeException("La entrevista debe estar realizada antes de aceptar al estudiante. Estado actual: " + preinscripcion.getEstado_entrevista());
+            if (preinscripcion.getEstado() != EstadoEntrevista.realizada) {
+                throw new RuntimeException("La entrevista debe estar realizada antes de aceptar al estudiante. Estado actual: " + preinscripcion.getEstado());
             }
 
             // Aceptar estudiante
@@ -245,8 +244,8 @@ public class EntrevistasService {
             Preinscripcion preinscripcion = preinscripcionOpt.get();
 
             // Verificar que la entrevista está realizada
-            if (preinscripcion.getEstado_entrevista() != EstadoEntrevista.realizada) {
-                throw new RuntimeException("La entrevista debe estar realizada antes de rechazar al estudiante. Estado actual: " + preinscripcion.getEstado_entrevista());
+            if (preinscripcion.getEstado() != EstadoEntrevista.realizada) {
+                throw new RuntimeException("La entrevista debe estar realizada antes de rechazar al estudiante. Estado actual: " + preinscripcion.getEstado());
             }
 
             // Rechazar estudiante

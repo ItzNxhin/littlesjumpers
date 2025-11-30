@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const existe = await response.json();
-
+            console.log(existe)
             if (existe === true) {
                 // Acudiente existe - mostrar formulario de estudiante
                 mostrarExito('¡Bienvenido! Tu información fue encontrada. Redirigiendo...');

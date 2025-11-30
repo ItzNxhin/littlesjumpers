@@ -35,7 +35,7 @@ public class PreinscripcionEntityMapper {
         response.setId(preinscripcion.getId());
         response.setFecha_solicitud(preinscripcion.getFecha_solicitud());
         response.setFecha_entrevista(preinscripcion.getFecha_entrevista());
-        response.setEstado_entrevista(preinscripcion.getEstado_entrevista());
+        response.setEstado_entrevista(preinscripcion.getEstado());
 
         // Mapear datos del estudiante si existe
         if (preinscripcion.getEstudiante() != null) {

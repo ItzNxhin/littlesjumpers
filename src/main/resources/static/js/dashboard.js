@@ -3,12 +3,59 @@ document.addEventListener('DOMContentLoaded', () => {
     verificarAutenticacion();
     inicializarDashboard();
     configurarCerrarSesion();
+    loadEntrevistas();
 
     // Cargar entrevistas si la sección está activa al cargar la página
     if (document.querySelector('.section.active')?.id === 'entrevistas') {
         loadEntrevistas();
     }
 });
+
+
+
+// Verificar si el usuario está autenticado
+function verificarAutenticacion() {
+    const userId = sessionStorage.getItem('userId');
+    const username = sessionStorage.getItem('username');
+    const rol = sessionStorage.getItem('rol');
+
+    if (!userId || !username || !rol) {
+        // No hay sesión activa, redirigir al inicio
+        window.location.href = '/';
+        return;
+    }
+    // Actualizar información del usuario en la interfaz
+    const userInfo = document.getElementById('userInfo');
+    if (userInfo) {
+        userInfo.textContent = `Bienvenido, ${username}`;
+    }
+};
+
+    
+
+function configurarCerrarSesion() {
+    const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+    
+    if (btnCerrarSesion) {
+        btnCerrarSesion.addEventListener('click', (e) => {
+            e.preventDefault(); // por si acaso el botón está dentro de un form
+
+            // Confirmación para evitar cierre accidental (muy recomendado)
+            if (!confirm('¿Está seguro que desea cerrar sesión?')) {
+                return; // si dice "Cancelar" no hace nada
+            }
+
+            // Limpiar
+            sessionStorage.removeItem('userId');
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('rol');
+
+            // Recomendado: usar replace en vez de href para que no pueda volver atrás con el botón del navegador
+            window.location.replace('/'); 
+            // o si tu login está en otra ruta: window.location.replace('/login');
+        });
+    }
+}
 
 let currentPreinscripcionId = null;
 const modal = document.getElementById('modal');
@@ -67,8 +114,8 @@ function loadEntrevistas() {
     tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Cargando...</td></tr>';
 
     Promise.all([
-        fetch('/api/entrevistas/aspirantes').then(r => r.json()),
-        fetch('/api/entrevistas/preinscripciones').then(r => r.json())
+        fetch('/api/admin/entrevistas/aspirantes').then(r => r.json()),
+        fetch('/api/admin/entrevistas/preinscripciones').then(r => r.json())
     ])
     .then(([aspirantes, preinscripciones]) => {
         const preMap = new Map(preinscripciones.map(p => [p.estudiante_id, p]));
@@ -156,9 +203,10 @@ function programarEntrevista(preId) {
 function crearPreinscripcion(estudianteId) {
     if (!confirm('¿Crear preinscripción para este estudiante?')) return;
 
-    fetch(`/api/entrevistas/preinscripcion/${estudianteId}`, {
+    fetch('/api/admin/entrevistas/preinscripcion', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estudiante_id: estudianteId })
     })
     .then(r => {
         if (!r.ok) throw Error();
@@ -174,7 +222,7 @@ function crearPreinscripcion(estudianteId) {
 function marcarEntrevistaRealizada(preId) {
     if (!confirm('¿Marcar la entrevista como realizada?')) return;
 
-    fetch(`/api/entrevistas/preinscripciones/${preId}/realizada`, {
+    fetch(`/api/admin/preinscripciones/${preId}/realizada`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' }
     })
@@ -192,7 +240,7 @@ function marcarEntrevistaRealizada(preId) {
 function aceptarEstudiante(estId) {
     if (!confirm('¿Aceptar al estudiante?')) return;
 
-    fetch(`/api/entrevistas/estudiante/${estId}/aceptar`, {
+    fetch(`/api/admin/estudiantes/${estId}/aceptar`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' }
     })
@@ -210,7 +258,7 @@ function aceptarEstudiante(estId) {
 function rechazarEstudiante(estId) {
     if (!confirm('¿Rechazar al estudiante?')) return;
 
-    fetch(`/api/entrevistas/estudiante/${estId}/rechazar`, {
+    fetch(`/api/admin/estudiantes/${estId}/rechazar`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' }
     })
@@ -235,10 +283,10 @@ document.getElementById('confirmarModal').onclick = () => {
         return;
     }
 
-    fetch(`/api/entrevistas/preinscripciones/${currentPreinscripcionId}/programar`, {
+    fetch(`/api/admin/preinscripciones/${currentPreinscripcionId}/programar`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fechaEntrevista: fecha })
+        body: JSON.stringify({ fecha_entrevista: fecha })
     })
     .then(r => {
         if (!r.ok) throw Error();

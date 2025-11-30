@@ -33,7 +33,7 @@ public class AdminController {
      * Obtener todos los estudiantes aspirantes
      * GET /api/admin/aspirantes
      */
-    @GetMapping("/aspirantes")
+    @GetMapping("/entrevistas/aspirantes")
     public ResponseEntity<?> obtenerAspirantes() {
         try {
             List<EstudianteResponse> aspirantes = entrevistasService.estudiantesAspirantes();
@@ -48,7 +48,7 @@ public class AdminController {
      * Obtener todas las preinscripciones
      * GET /api/admin/preinscripciones
      */
-    @GetMapping("/preinscripciones")
+    @GetMapping("/entrevistas/preinscripciones")
     public ResponseEntity<?> obtenerPreinscripciones() {
         try {
             List<PreinscripcionResponse> preinscripciones = entrevistasService.obtenerTodasPreinscripciones();
@@ -85,7 +85,7 @@ public class AdminController {
      * POST /api/admin/preinscripciones
      * Body: { "estudiante_id": 1 }
      */
-    @PostMapping("/preinscripciones")
+    @PostMapping("entrevistas/preinscripcion")
     public ResponseEntity<?> crearPreinscripcion(@Valid @RequestBody PreinscripcionRequest request) {
         try {
             if (request.getEstudiante_id() == null) {
@@ -167,6 +167,7 @@ public class AdminController {
      */
     @PutMapping("/estudiantes/{id}/rechazar")
     public ResponseEntity<?> rechazarEstudiante(@PathVariable Integer id) {
+        System.out.println("HOLLLLAAA");
         try {
             EstudianteResponse response = entrevistasService.rechazarEstudiante(id);
             return ResponseEntity.ok(response);

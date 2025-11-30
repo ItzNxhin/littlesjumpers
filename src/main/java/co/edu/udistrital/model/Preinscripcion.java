@@ -33,7 +33,15 @@ public class Preinscripcion {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado_entrevista", nullable = false)
-    private EstadoEntrevista estado_entrevista;
+    private EstadoEntrevista estado;
+
+    public EstadoEntrevista getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoEntrevista estado) {
+        this.estado = estado;
+    }
 
     public enum EstadoEntrevista {
         pendiente,
@@ -44,14 +52,14 @@ public class Preinscripcion {
     // Constructor por defecto
     public Preinscripcion() {
         this.fecha_solicitud = LocalDateTime.now();
-        this.estado_entrevista = EstadoEntrevista.pendiente;
+        this.estado = EstadoEntrevista.pendiente;
     }
 
     //Constructor con estudiante
     public Preinscripcion(Estudiante estudiante) {
         this.estudiante =  estudiante;
         this.fecha_solicitud = LocalDateTime.now();
-        this.estado_entrevista = EstadoEntrevista.pendiente;
+        this.estado = EstadoEntrevista.pendiente;
     }
 
     // Getters y Setters
@@ -87,11 +95,5 @@ public class Preinscripcion {
         this.fecha_entrevista = fecha_entrevista;
     }
 
-    public EstadoEntrevista getEstado_entrevista() {
-        return estado_entrevista;
-    }
-
-    public void setEstado_entrevista(EstadoEntrevista estado_entrevista) {
-        this.estado_entrevista = estado_entrevista;
-    }
+    
 }

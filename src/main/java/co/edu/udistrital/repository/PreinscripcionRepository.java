@@ -25,8 +25,9 @@ public interface PreinscripcionRepository extends JpaRepository<Preinscripcion, 
 
     /**
      * Buscar todas las preinscripciones por estado de entrevista
+     * Nota: El nombre del método debe coincidir con el campo de la entidad (estado_entrevista)
      */
-    List<Preinscripcion> findByEstadoEntrevista(EstadoEntrevista estadoEntrevista);
+    List<Preinscripcion> findByEstado(EstadoEntrevista estado_entrevista);
 
     /**
      * Verificar si existe preinscripción para un estudiante
