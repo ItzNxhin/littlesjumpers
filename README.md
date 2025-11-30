@@ -20,7 +20,6 @@
 - [API Endpoints](#api-endpoints)
 - [Instalación y Configuración](#instalación-y-configuración)
 - [Uso del Sistema](#uso-del-sistema)
-- [Roadmap](#roadmap)
 - [Contribución](#contribución)
 
 ---
