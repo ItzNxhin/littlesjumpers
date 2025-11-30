@@ -22,7 +22,6 @@ import co.edu.udistrital.model.Preinscripcion.EstadoEntrevista;
 import co.edu.udistrital.repository.EstudianteRepository;
 import co.edu.udistrital.repository.PreinscripcionRepository;
 
-
 @Service
 public class EntrevistasService {
 
@@ -32,15 +31,18 @@ public class EntrevistasService {
     @Autowired
     private PreinscripcionRepository preinscripcionRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     /**
      * Obtener todos los estudiantes aspirantes
      */
     @Transactional(readOnly = true)
-    public List<EstudianteResponse> estudiantesAspirantes(){
+    public List<EstudianteResponse> estudiantesAspirantes() {
         try {
             Optional<List<Estudiante>> estudiantes = estudianteRepository.findByEstado(Estado.aspirante);
 
-            if(estudiantes.isPresent()) {
+            if (estudiantes.isPresent()) {
                 return EstudianteEntityMapper.toResponseList(estudiantes.get());
             }
             return new ArrayList<>();
@@ -139,6 +141,14 @@ public class EntrevistasService {
 
             Preinscripcion updated = preinscripcionRepository.save(preinscripcion);
 
+            String mensaje_email = "Hola: " + updated.getEstudiante().getAcudiente().getNombre()
+                    + "! \nLe queremos informar que la entrevista de su hijo " + updated.getEstudiante().getNombre()
+                    + " " + updated.getEstudiante().getApellido() + " ha sido programa para la fecha y hora: "
+                    + updated.getFecha_entrevista().toString();
+
+            // TODO Revisar emails
+            emailService.enviarEmail(mensaje_email, mensaje_email, mensaje_email);
+
             return PreinscripcionEntityMapper.toResponse(updated, "Entrevista programada exitosamente");
         } catch (DataAccessException e) {
             throw new DatabaseException("Error al programar entrevista", e);
@@ -188,7 +198,8 @@ public class EntrevistasService {
             Estudiante estudiante = estudianteOpt.get();
 
             if (estudiante.getEstado() != Estado.aspirante) {
-                throw new RuntimeException("Solo se pueden aceptar estudiantes aspirantes. Estado actual: " + estudiante.getEstado());
+                throw new RuntimeException(
+                        "Solo se pueden aceptar estudiantes aspirantes. Estado actual: " + estudiante.getEstado());
             }
 
             // Verificar que tiene preinscripción
@@ -201,12 +212,21 @@ public class EntrevistasService {
 
             // Verificar que la entrevista está realizada
             if (preinscripcion.getEstado() != EstadoEntrevista.realizada) {
-                throw new RuntimeException("La entrevista debe estar realizada antes de aceptar al estudiante. Estado actual: " + preinscripcion.getEstado());
+                throw new RuntimeException(
+                        "La entrevista debe estar realizada antes de aceptar al estudiante. Estado actual: "
+                                + preinscripcion.getEstado());
             }
 
             // Aceptar estudiante
             estudiante.setEstado(Estado.aceptado);
             Estudiante updated = estudianteRepository.save(estudiante);
+
+            String mensaje_email = "Hola: " + updated.getAcudiente().getNombre()
+                    + "! \nLe queremos informar que  su hijo " + updated.getNombre()
+                    + " " + updated.getNombre() + "ha sido aceptado en nuestra institución, ¡Bienvenidos!";
+
+            // TODO Revisar emails
+            emailService.enviarEmail(mensaje_email, mensaje_email, mensaje_email);
 
             EstudianteResponse response = EstudianteEntityMapper.toResponse(updated);
             response.setMessage("Estudiante aceptado exitosamente");
@@ -232,7 +252,8 @@ public class EntrevistasService {
             Estudiante estudiante = estudianteOpt.get();
 
             if (estudiante.getEstado() != Estado.aspirante) {
-                throw new RuntimeException("Solo se pueden rechazar estudiantes aspirantes. Estado actual: " + estudiante.getEstado());
+                throw new RuntimeException(
+                        "Solo se pueden rechazar estudiantes aspirantes. Estado actual: " + estudiante.getEstado());
             }
 
             // Verificar que tiene preinscripción
@@ -245,12 +266,21 @@ public class EntrevistasService {
 
             // Verificar que la entrevista está realizada
             if (preinscripcion.getEstado() != EstadoEntrevista.realizada) {
-                throw new RuntimeException("La entrevista debe estar realizada antes de rechazar al estudiante. Estado actual: " + preinscripcion.getEstado());
+                throw new RuntimeException(
+                        "La entrevista debe estar realizada antes de rechazar al estudiante. Estado actual: "
+                                + preinscripcion.getEstado());
             }
 
             // Rechazar estudiante
             estudiante.setEstado(Estado.rechazado);
             Estudiante updated = estudianteRepository.save(estudiante);
+
+            String mensaje_email = "Hola: " + updated.getAcudiente().getNombre()
+                    + "! \nLamentamos informar que  su hijo " + updated.getNombre()
+                    + " " + updated.getNombre() + "ha sido rechazado en el proceso.";
+
+            // TODO Revisar emails
+            emailService.enviarEmail(mensaje_email, mensaje_email, mensaje_email);
 
             EstudianteResponse response = EstudianteEntityMapper.toResponse(updated);
             response.setMessage("Estudiante rechazado");

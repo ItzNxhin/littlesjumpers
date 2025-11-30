@@ -18,6 +18,7 @@ import co.edu.udistrital.dto.EstudianteResponse;
 import co.edu.udistrital.dto.PreinscripcionRequest;
 import co.edu.udistrital.dto.PreinscripcionResponse;
 import co.edu.udistrital.model.Preinscripcion.EstadoEntrevista;
+import co.edu.udistrital.service.EmailService;
 import co.edu.udistrital.service.EntrevistasService;
 import jakarta.validation.Valid;
 
@@ -28,6 +29,9 @@ public class AdminController {
 
     @Autowired
     private EntrevistasService entrevistasService;
+
+    @Autowired
+    private EmailService emailService;
 
     /**
      * Obtener todos los estudiantes aspirantes
@@ -174,6 +178,21 @@ public class AdminController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al rechazar estudiante: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/correo/{id}")
+    public ResponseEntity<?> correotest(@PathVariable String id) {
+        System.out.println("HOLLLLAAA");
+        try {
+            emailService.enviarEmail("", "", id);
+            return ResponseEntity.ok("o");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al rechazar estudiante: " + e.getMessage());
         }
