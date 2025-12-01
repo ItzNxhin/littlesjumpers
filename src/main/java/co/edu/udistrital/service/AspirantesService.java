@@ -12,15 +12,12 @@ import co.edu.udistrital.dto.AcudienteResponse;
 import co.edu.udistrital.dto.EstudianteRequest;
 import co.edu.udistrital.dto.EstudianteResponse;
 import co.edu.udistrital.dto.UsuarioRequest;
-import co.edu.udistrital.dto.mapper.AcudienteEntityMapper;
 import co.edu.udistrital.dto.mapper.EstudianteEntityMapper;
 import co.edu.udistrital.exception.DatabaseException;
 import co.edu.udistrital.model.Acudiente;
 import co.edu.udistrital.model.Estudiante;
 import co.edu.udistrital.model.Preinscripcion;
 import co.edu.udistrital.model.Estudiante.Estado;
-import co.edu.udistrital.repository.AcudienteRepository;
-import co.edu.udistrital.repository.EstudianteRepository;
 import co.edu.udistrital.repository.PreinscripcionRepository;
 import co.edu.udistrital.repository.UsuariosRepository;
 
@@ -31,10 +28,10 @@ public class AspirantesService {
     private UsuariosRepository usuariosRepository;
 
     @Autowired
-    private AcudienteRepository acudienteRepository;
+    private AcudienteService acudienteService;
 
     @Autowired
-    private EstudianteRepository estudianteRepository;
+    private EstudianteService estudianteService;
 
     @Autowired
     private PreinscripcionRepository preinscripcionRepository;
@@ -54,13 +51,7 @@ public class AspirantesService {
     @Transactional(readOnly = false)
     public AcudienteResponse guardarAcudiente(AcudienteRequest acudienteRequest){
         try {
-            acudienteRepository.save(AcudienteEntityMapper.toEntity(acudienteRequest));
-            return new AcudienteResponse(
-                acudienteRequest.getNombre(),
-                acudienteRequest.getApellido(),
-                acudienteRequest.getCedula(),
-                "Acudiente creado con éxito"
-            );
+            return acudienteService.crear(acudienteRequest);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -69,18 +60,18 @@ public class AspirantesService {
     @Transactional(readOnly = false)
     public EstudianteResponse guardarEstudiante(EstudianteRequest estudianteRequest){
         try {
-            // Buscar acudiente por cédula o por ID
+            // Buscar acudiente por cédula o por ID usando el servicio
             Optional<Acudiente> acudienteOpt;
 
             if (estudianteRequest.getAcudiente_cedula() != null && !estudianteRequest.getAcudiente_cedula().isEmpty()) {
                 // Buscar por cédula
-                acudienteOpt = acudienteRepository.findByCedula(estudianteRequest.getAcudiente_cedula());
+                acudienteOpt = acudienteService.obtenerEntidadPorCedula(estudianteRequest.getAcudiente_cedula());
                 if(!acudienteOpt.isPresent()){
                     throw new RuntimeException("Acudiente no encontrado con cédula: " + estudianteRequest.getAcudiente_cedula());
                 }
             } else if (estudianteRequest.getAcudiente_id() > 0) {
                 // Buscar por ID
-                acudienteOpt = acudienteRepository.findById(estudianteRequest.getAcudiente_id());
+                acudienteOpt = acudienteService.obtenerEntidadPorId(estudianteRequest.getAcudiente_id());
                 if(!acudienteOpt.isPresent()){
                     throw new RuntimeException("Acudiente no encontrado con ID: " + estudianteRequest.getAcudiente_id());
                 }
@@ -96,23 +87,26 @@ public class AspirantesService {
                 estudiante.setEstado(Estado.aspirante);
             }
 
-            Estudiante estudianteGuardado = estudianteRepository.save(estudiante);
-            preinscripcionRepository.save(new Preinscripcion(estudianteGuardado));
+            // Crear el estudiante usando EstudianteService (delegando la persistencia)
+            EstudianteRequest requestParaServicio = new EstudianteRequest();
+            requestParaServicio.setTarjeta_identidad(estudiante.getTarjeta_identidad());
+            requestParaServicio.setNombre(estudiante.getNombre());
+            requestParaServicio.setApellido(estudiante.getApellido());
+            requestParaServicio.setFecha_nacimiento(estudiante.getFecha_nacimiento());
+            requestParaServicio.setGrado_aplicado(estudiante.getGrado_aplicado());
+            requestParaServicio.setEstado(estudiante.getEstado());
+            requestParaServicio.setAcudiente_id(acudiente.getId());
 
+            EstudianteResponse estudianteResponse = estudianteService.crear(requestParaServicio);
 
-            EstudianteResponse response = new EstudianteResponse();
-            response.setId(estudianteGuardado.getId());
-            response.setTarjeta_identidad(estudianteGuardado.getTarjeta_identidad());
-            response.setNombre(estudianteGuardado.getNombre());
-            response.setApellido(estudianteGuardado.getApellido());
-            response.setFecha_nacimiento(estudianteGuardado.getFecha_nacimiento());
-            response.setGrado_aplicado(estudianteGuardado.getGrado_aplicado());
-            response.setEstado(estudianteGuardado.getEstado());
-            response.setGrupo(estudianteGuardado.getGrupo());
-            response.setAcudiente_id(estudianteGuardado.getAcudiente().getId());
-            response.setMessage("Estudiante registrado con éxito");
+            // Obtener la entidad guardada para crear la preinscripción
+            Optional<Estudiante> estudianteGuardadoOpt = estudianteService.obtenerEntidadPorId(estudianteResponse.getId());
+            if (estudianteGuardadoOpt.isPresent()) {
+                preinscripcionRepository.save(new Preinscripcion(estudianteGuardadoOpt.get()));
+            }
 
-            return response;
+            estudianteResponse.setMessage("Estudiante registrado con éxito");
+            return estudianteResponse;
         } catch (DataAccessException e) {
             throw new DatabaseException("Error al guardar el estudiante en la base de datos", e);
         } catch (Exception e) {

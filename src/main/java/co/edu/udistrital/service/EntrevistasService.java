@@ -1,7 +1,6 @@
 package co.edu.udistrital.service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,21 +11,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.udistrital.dto.EstudianteResponse;
 import co.edu.udistrital.dto.PreinscripcionResponse;
-import co.edu.udistrital.dto.mapper.EstudianteEntityMapper;
 import co.edu.udistrital.dto.mapper.PreinscripcionEntityMapper;
 import co.edu.udistrital.exception.DatabaseException;
 import co.edu.udistrital.model.Estudiante;
 import co.edu.udistrital.model.Estudiante.Estado;
 import co.edu.udistrital.model.Preinscripcion;
 import co.edu.udistrital.model.Preinscripcion.EstadoEntrevista;
-import co.edu.udistrital.repository.EstudianteRepository;
 import co.edu.udistrital.repository.PreinscripcionRepository;
 
 @Service
 public class EntrevistasService {
 
     @Autowired
-    private EstudianteRepository estudianteRepository;
+    private EstudianteService estudianteService;
 
     @Autowired
     private PreinscripcionRepository preinscripcionRepository;
@@ -40,14 +37,7 @@ public class EntrevistasService {
     @Transactional(readOnly = true)
     public List<EstudianteResponse> estudiantesAspirantes() {
         try {
-            Optional<List<Estudiante>> estudiantes = estudianteRepository.findByEstado(Estado.aspirante);
-
-            if (estudiantes.isPresent()) {
-                return EstudianteEntityMapper.toResponseList(estudiantes.get());
-            }
-            return new ArrayList<>();
-        } catch (DataAccessException e) {
-            throw new DatabaseException("Error al consultar estudiantes aspirantes", e);
+            return estudianteService.obtenerPorEstado(Estado.aspirante);
         } catch (Exception e) {
             throw new RuntimeException("Error inesperado al obtener aspirantes: " + e.getMessage(), e);
         }
@@ -86,17 +76,23 @@ public class EntrevistasService {
     public PreinscripcionResponse crearPreinscripcion(Integer estudianteId) {
         try {
             // Verificar que el estudiante existe
-            Optional<Estudiante> estudianteOpt = estudianteRepository.findById(estudianteId);
-            if (!estudianteOpt.isPresent()) {
+            EstudianteResponse estudianteResponse = estudianteService.obtenerPorId(estudianteId);
+            if (estudianteResponse == null) {
                 throw new RuntimeException("Estudiante no encontrado con ID: " + estudianteId);
             }
 
-            Estudiante estudiante = estudianteOpt.get();
-
             // Verificar que el estudiante es aspirante
-            if (estudiante.getEstado() != Estado.aspirante) {
+            if (estudianteResponse.getEstado() != Estado.aspirante) {
                 throw new RuntimeException("El estudiante no es aspirante");
             }
+
+            // Obtener la entidad completa para guardar la relación
+            Optional<Estudiante> estudianteOpt = estudianteService.obtenerEntidadPorId(estudianteId);
+            if (!estudianteOpt.isPresent()) {
+                throw new RuntimeException("Error al obtener entidad estudiante");
+            }
+
+            Estudiante estudiante = estudianteOpt.get();
 
             // Verificar que no existe ya una preinscripción
             if (preinscripcionRepository.existsByEstudianteId(estudianteId)) {
@@ -146,8 +142,9 @@ public class EntrevistasService {
                     + " " + updated.getEstudiante().getApellido() + " ha sido programa para la fecha y hora: "
                     + updated.getFecha_entrevista().toString();
 
-            // TODO Revisar emails
-            emailService.enviarEmail(mensaje_email, mensaje_email, mensaje_email);
+            String asunto_email = "Entrevista programada";
+
+            emailService.enviarEmail(updated.getEstudiante().getAcudiente().getCorreo(), asunto_email, mensaje_email);
 
             return PreinscripcionEntityMapper.toResponse(updated, "Entrevista programada exitosamente");
         } catch (DataAccessException e) {
@@ -189,17 +186,16 @@ public class EntrevistasService {
     @Transactional(readOnly = false)
     public EstudianteResponse aceptarEstudiante(Integer estudianteId) {
         try {
-            Optional<Estudiante> estudianteOpt = estudianteRepository.findById(estudianteId);
+            EstudianteResponse estudianteResponse = estudianteService.obtenerPorId(estudianteId);
 
-            if (!estudianteOpt.isPresent()) {
+            if (estudianteResponse == null) {
                 throw new RuntimeException("Estudiante no encontrado con ID: " + estudianteId);
             }
 
-            Estudiante estudiante = estudianteOpt.get();
-
-            if (estudiante.getEstado() != Estado.aspirante) {
+            if (estudianteResponse.getEstado() != Estado.aspirante) {
                 throw new RuntimeException(
-                        "Solo se pueden aceptar estudiantes aspirantes. Estado actual: " + estudiante.getEstado());
+                        "Solo se pueden aceptar estudiantes aspirantes. Estado actual: "
+                                + estudianteResponse.getEstado());
             }
 
             // Verificar que tiene preinscripción
@@ -217,20 +213,23 @@ public class EntrevistasService {
                                 + preinscripcion.getEstado());
             }
 
-            // Aceptar estudiante
-            estudiante.setEstado(Estado.aceptado);
-            Estudiante updated = estudianteRepository.save(estudiante);
+            // Aceptar estudiante usando el servicio
+            EstudianteResponse response = estudianteService.actualizarEstado(estudianteId, Estado.aceptado);
 
-            String mensaje_email = "Hola: " + updated.getAcudiente().getNombre()
-                    + "! \nLe queremos informar que  su hijo " + updated.getNombre()
-                    + " " + updated.getNombre() + "ha sido aceptado en nuestra institución, ¡Bienvenidos!";
+            // Obtener la entidad completa para acceder al acudiente
+            Optional<Estudiante> estudianteOpt = estudianteService.obtenerEntidadPorId(estudianteId);
+            if (estudianteOpt.isPresent()) {
+                Estudiante estudiante = estudianteOpt.get();
+                String mensaje_email = "Hola: " + estudiante.getAcudiente().getNombre()
+                        + "! \nLe queremos informar que  su hijo " + estudiante.getNombre()
+                        + " " + estudiante.getApellido() + " ha sido aceptado en nuestra institución, ¡Bienvenidos!";
 
-            // TODO Revisar emails
-            emailService.enviarEmail(mensaje_email, mensaje_email, mensaje_email);
+                String asunto_email = "Resultado de admisión: ¡Su hijo ha sido aceptado!";
 
-            EstudianteResponse response = EstudianteEntityMapper.toResponse(updated);
+                emailService.enviarEmail(estudiante.getAcudiente().getCorreo(), asunto_email, mensaje_email);
+            }
+
             response.setMessage("Estudiante aceptado exitosamente");
-
             return response;
         } catch (DataAccessException e) {
             throw new DatabaseException("Error al aceptar estudiante", e);
@@ -243,17 +242,16 @@ public class EntrevistasService {
     @Transactional(readOnly = false)
     public EstudianteResponse rechazarEstudiante(Integer estudianteId) {
         try {
-            Optional<Estudiante> estudianteOpt = estudianteRepository.findById(estudianteId);
+            EstudianteResponse estudianteResponse = estudianteService.obtenerPorId(estudianteId);
 
-            if (!estudianteOpt.isPresent()) {
+            if (estudianteResponse == null) {
                 throw new RuntimeException("Estudiante no encontrado con ID: " + estudianteId);
             }
 
-            Estudiante estudiante = estudianteOpt.get();
-
-            if (estudiante.getEstado() != Estado.aspirante) {
+            if (estudianteResponse.getEstado() != Estado.aspirante) {
                 throw new RuntimeException(
-                        "Solo se pueden rechazar estudiantes aspirantes. Estado actual: " + estudiante.getEstado());
+                        "Solo se pueden rechazar estudiantes aspirantes. Estado actual: "
+                                + estudianteResponse.getEstado());
             }
 
             // Verificar que tiene preinscripción
@@ -271,20 +269,23 @@ public class EntrevistasService {
                                 + preinscripcion.getEstado());
             }
 
-            // Rechazar estudiante
-            estudiante.setEstado(Estado.rechazado);
-            Estudiante updated = estudianteRepository.save(estudiante);
+            // Rechazar estudiante usando el servicio
+            EstudianteResponse response = estudianteService.actualizarEstado(estudianteId, Estado.rechazado);
 
-            String mensaje_email = "Hola: " + updated.getAcudiente().getNombre()
-                    + "! \nLamentamos informar que  su hijo " + updated.getNombre()
-                    + " " + updated.getNombre() + "ha sido rechazado en el proceso.";
+            // Obtener la entidad completa para acceder al acudiente
+            Optional<Estudiante> estudianteOpt = estudianteService.obtenerEntidadPorId(estudianteId);
+            if (estudianteOpt.isPresent()) {
+                Estudiante estudiante = estudianteOpt.get();
+                String mensaje_email = "Hola: " + estudiante.getAcudiente().getNombre()
+                        + "! \nLamentamos informar que  su hijo " + estudiante.getNombre()
+                        + " " + estudiante.getApellido() + " ha sido rechazado en el proceso.";
 
-            // TODO Revisar emails
-            emailService.enviarEmail(mensaje_email, mensaje_email, mensaje_email);
+                String asunto_email = "Resultado de admisión: Lo sentimos...";
 
-            EstudianteResponse response = EstudianteEntityMapper.toResponse(updated);
+                emailService.enviarEmail(estudiante.getAcudiente().getCorreo(), asunto_email, mensaje_email);
+            }
+
             response.setMessage("Estudiante rechazado");
-
             return response;
         } catch (DataAccessException e) {
             throw new DatabaseException("Error al rechazar estudiante", e);

@@ -22,6 +22,7 @@ import co.edu.udistrital.service.EmailService;
 import co.edu.udistrital.service.EntrevistasService;
 import jakarta.validation.Valid;
 
+//TODO Mejorar nombre de endpoints
 @RestController
 @RequestMapping("/api/admin")
 @CrossOrigin(origins = "*")
