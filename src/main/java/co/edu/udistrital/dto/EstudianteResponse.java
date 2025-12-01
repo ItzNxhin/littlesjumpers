@@ -3,7 +3,6 @@ package co.edu.udistrital.dto;
 import java.time.LocalDate;
 
 import co.edu.udistrital.model.Estudiante.Estado;
-import co.edu.udistrital.model.Grupo;
 import co.edu.udistrital.model.Grupo.Grado;
 
 public class EstudianteResponse {
@@ -15,7 +14,7 @@ public class EstudianteResponse {
     private LocalDate fecha_nacimiento;
     private Grado grado_aplicado;
     private Estado estado;
-    private Grupo grupo;
+    private int grupo_id;
     private int acudiente_id;
     private String message;
 
@@ -77,15 +76,7 @@ public class EstudianteResponse {
     public void setEstado(Estado estado) {
         this.estado = estado;
     }
-
-    public Grupo getGrupo() {
-        return grupo;
-    }
-
-    public void setGrupo(Grupo grupo) {
-        this.grupo = grupo;
-    }
-
+    
     public int getAcudiente_id() {
         return acudiente_id;
     }
@@ -100,5 +91,13 @@ public class EstudianteResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public int getGrupo_id() {
+        return grupo_id;
+    }
+
+    public void setGrupo_id(int grupo_id) {
+        this.grupo_id = grupo_id;
     }
 }

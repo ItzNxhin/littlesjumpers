@@ -78,6 +78,7 @@ public class ProfesorEntityMapper {
         }
 
         ProfesorResponse response = new ProfesorResponse(
+            profesor.getId(),
             profesor.getNombre(),
             profesor.getApellido(),
             profesor.getCedula(),

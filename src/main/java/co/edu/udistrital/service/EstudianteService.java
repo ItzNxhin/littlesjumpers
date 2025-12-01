@@ -17,6 +17,7 @@ import co.edu.udistrital.model.Estudiante;
 import co.edu.udistrital.model.Grupo;
 import co.edu.udistrital.model.Estudiante.Estado;
 import co.edu.udistrital.repository.EstudianteRepository;
+import co.edu.udistrital.repository.GrupoRepository;
 
 @Service
 public class EstudianteService {
@@ -27,8 +28,12 @@ public class EstudianteService {
     @Autowired
     private AcudienteService acudienteService;
 
+    @Autowired
+    private GrupoRepository grupoRepository;
+
     /**
      * Obtiene todos los estudiantes
+     * 
      * @return Lista de EstudianteResponse
      */
     @Transactional(readOnly = true)
@@ -45,6 +50,7 @@ public class EstudianteService {
 
     /**
      * Obtiene un estudiante por su ID
+     * 
      * @param id ID del estudiante
      * @return EstudianteResponse si existe, null si no existe
      */
@@ -65,6 +71,7 @@ public class EstudianteService {
 
     /**
      * Obtiene estudiantes por su estado
+     * 
      * @param estado Estado del estudiante (aspirante, aceptado, rechazado)
      * @return Lista de EstudianteResponse
      */
@@ -85,6 +92,7 @@ public class EstudianteService {
 
     /**
      * Crea un nuevo estudiante
+     * 
      * @param request Datos del estudiante a crear
      * @return EstudianteResponse del estudiante creado
      */
@@ -113,7 +121,8 @@ public class EstudianteService {
 
     /**
      * Actualiza un estudiante existente
-     * @param id ID del estudiante a actualizar
+     * 
+     * @param id      ID del estudiante a actualizar
      * @param request Datos actualizados del estudiante
      * @return EstudianteResponse del estudiante actualizado, null si no existe
      */
@@ -128,6 +137,11 @@ public class EstudianteService {
 
             Estudiante estudiante = estudianteExistente.get();
             EstudianteEntityMapper.updateEntity(estudiante, request);
+            Optional<Grupo> grupoAasignar = grupoRepository.findById(id);
+
+            if (request.getGrupo_id() != 0 && grupoAasignar.isPresent())
+                estudiante.setGrupo(grupoAasignar.get());
+            
             Estudiante estudianteActualizado = estudianteRepository.save(estudiante);
 
             EstudianteResponse response = EstudianteEntityMapper.toResponse(estudianteActualizado);
@@ -142,7 +156,8 @@ public class EstudianteService {
 
     /**
      * Actualiza el estado de un estudiante
-     * @param id ID del estudiante
+     * 
+     * @param id          ID del estudiante
      * @param nuevoEstado Nuevo estado del estudiante
      * @return EstudianteResponse del estudiante actualizado, null si no existe
      */
@@ -171,6 +186,7 @@ public class EstudianteService {
 
     /**
      * Elimina un estudiante por su ID
+     * 
      * @param id ID del estudiante a eliminar
      * @return true si se eliminó, false si no existía
      */
@@ -191,6 +207,7 @@ public class EstudianteService {
 
     /**
      * Verifica si existe un estudiante con el ID dado
+     * 
      * @param id ID del estudiante
      * @return true si existe, false si no
      */
@@ -207,8 +224,9 @@ public class EstudianteService {
 
     /**
      * Asigna un estudiante a un grupo
+     * 
      * @param estudianteId ID del estudiante
-     * @param grupo Grupo a asignar (puede ser null para quitar el grupo)
+     * @param grupo        Grupo a asignar (puede ser null para quitar el grupo)
      * @return EstudianteResponse del estudiante actualizado
      */
     @Transactional
@@ -225,7 +243,8 @@ public class EstudianteService {
             Estudiante estudianteActualizado = estudianteRepository.save(estudiante);
 
             EstudianteResponse response = EstudianteEntityMapper.toResponse(estudianteActualizado);
-            response.setMessage(grupo != null ? "Estudiante asignado al grupo exitosamente" : "Estudiante removido del grupo");
+            response.setMessage(
+                    grupo != null ? "Estudiante asignado al grupo exitosamente" : "Estudiante removido del grupo");
             return response;
         } catch (DataAccessException e) {
             throw new DatabaseException("Error al asignar grupo al estudiante", e);
@@ -236,6 +255,7 @@ public class EstudianteService {
 
     /**
      * Obtiene estudiantes sin grupo asignado
+     * 
      * @return Lista de EstudianteResponse
      */
     @Transactional(readOnly = true)
@@ -243,8 +263,8 @@ public class EstudianteService {
         try {
             List<Estudiante> estudiantes = estudianteRepository.findAll();
             List<Estudiante> sinGrupo = estudiantes.stream()
-                .filter(e -> e.getGrupo() == null)
-                .toList();
+                    .filter(e -> e.getGrupo() == null)
+                    .toList();
             return EstudianteEntityMapper.toResponseList(sinGrupo);
         } catch (DataAccessException e) {
             throw new DatabaseException("Error al consultar estudiantes sin grupo", e);
@@ -255,6 +275,7 @@ public class EstudianteService {
 
     /**
      * Obtiene la entidad Estudiante por su ID (para uso interno de servicios)
+     * 
      * @param id ID del estudiante
      * @return Optional<Estudiante>
      */

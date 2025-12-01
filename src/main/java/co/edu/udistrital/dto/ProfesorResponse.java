@@ -2,6 +2,7 @@ package co.edu.udistrital.dto;
 
 public class ProfesorResponse {
 
+    private int id;
     private String nombre;
     private String apellido;
     private String cedula;
@@ -10,6 +11,14 @@ public class ProfesorResponse {
     private String message;
 
     public ProfesorResponse(String nombre, String apellido, String cedula, String message) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.cedula = cedula;
+        this.message = message;
+    }
+
+    public ProfesorResponse(int id, String nombre, String apellido, String cedula, String message) {
+        this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.cedula = cedula;
@@ -63,4 +72,13 @@ public class ProfesorResponse {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
 }

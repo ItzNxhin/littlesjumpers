@@ -2,6 +2,7 @@ package co.edu.udistrital.dto;
 
 public class AcudienteResponse {
     
+    private int id;
     private String nombre;
     private String apellido;
     private String cedula;
@@ -9,14 +10,25 @@ public class AcudienteResponse {
     private String contacto_extra;
     private String message;
 
+    public AcudienteResponse(String message) {
+        this.message = message;
+    }
 
-    
     public AcudienteResponse(String nombre, String apellido, String cedula, String message) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.cedula = cedula;
         this.message = message;
     }
+
+    public AcudienteResponse(int id, String nombre, String apellido, String cedula, String message) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.cedula = cedula;
+        this.message = message;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -53,6 +65,10 @@ public class AcudienteResponse {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-
-    
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
 }

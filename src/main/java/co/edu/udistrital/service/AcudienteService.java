@@ -121,7 +121,7 @@ public class AcudienteService {
             response.setMessage("Acudiente actualizado exitosamente");
             return response;
         } catch (DataAccessException e) {
-            throw new DatabaseException("Error al actualizar acudiente", e);
+            throw new DatabaseException("Error al actualizar acudiente: "+ e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException("Error inesperado al actualizar acudiente: " + e.getMessage(), e);
         }

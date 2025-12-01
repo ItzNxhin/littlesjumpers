@@ -7,6 +7,7 @@
     <title>Panel de Admisiones - MiColegio</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/gestion-usuarios.css}">
 </head>
 <body>
     <header>
@@ -38,30 +39,107 @@
 
         <section class="content">
 
-            <!-- Gestión de Usuarios (se mantiene tal cual estaba) -->
+            <!-- Gestión de Usuarios -->
             <div id="gestion-usuarios" class="section">
                 <h2>Gestión de Usuarios</h2>
-                <div class="actions-bar">
-                    <button class="btn btn-primary">+ Agregar Usuario</button>
-                    <input type="search" placeholder="Buscar usuario..." class="search-input">
+
+                <!-- Tabs superiores -->
+                <div class="tabs-container-inline">
+                    <button class="tab-btn-inline active" data-tab="estudiantes">Estudiantes</button>
+                    <button class="tab-btn-inline" data-tab="profesores">Profesores</button>
+                    <button class="tab-btn-inline" data-tab="acudientes">Acudientes</button>
                 </div>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Usuario</th>
-                                <th>Rol</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="5" class="empty-state">No hay usuarios registrados</td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                <!-- Tab Estudiantes -->
+                <div id="tab-estudiantes-inline" class="tab-content-inline active">
+                    <div class="estudiantes-layout-inline">
+                        <div class="grupos-sidebar-inline">
+                            <div class="grupos-header">
+                                <h3>Grupos</h3>
+                                <button class="btn-crear-grupo" onclick="gestionUsuarios.crearGrupo()">+ Crear</button>
+                            </div>
+                            <div class="grupos-list" id="gruposList">
+                                <!-- Los grupos se cargan dinámicamente -->
+                            </div>
+                        </div>
+                        <div class="contenido-principal-inline">
+                            <div class="acciones-header">
+                                <h3 id="grupoSeleccionadoNombre">Selecciona un grupo</h3>
+                                <div class="acciones-buttons">
+                                    <button class="btn-accion btn-consultar" id="btnConsultarEstudiante" disabled onclick="gestionUsuarios.consultarEstudiante()">
+                                        📋 Consultar
+                                    </button>
+                                    <button class="btn-accion btn-modificar" id="btnModificarEstudiante" disabled onclick="gestionUsuarios.modificarEstudiante()">
+                                        ✏️ Modificar
+                                    </button>
+                                    <button class="btn-accion btn-cambiar-estado" id="btnCambiarEstado" disabled onclick="gestionUsuarios.cambiarEstadoEstudiante()">
+                                        🔄 Cambiar Estado
+                                    </button>
+                                    <button class="btn-accion btn-descargar" id="btnDescargarLista" disabled onclick="gestionUsuarios.descargarLista()">
+                                        📥 Descargar Lista
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="usuarios-list" id="estudiantesList">
+                                <div class="empty-state-inline">
+                                    <div class="empty-state-icon">👥</div>
+                                    <div class="empty-state-text">Selecciona un grupo para ver los estudiantes</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Profesores -->
+                <div id="tab-profesores-inline" class="tab-content-inline">
+                    <div class="contenido-principal-inline" style="padding-top: 0;">
+                        <div class="acciones-header">
+                            <h3>Profesores</h3>
+                            <div class="acciones-buttons">
+                                <button class="btn-accion btn-crear" onclick="gestionUsuarios.crearProfesor()">
+                                    ➕ Crear Cuenta
+                                </button>
+                                <button class="btn-accion btn-consultar" id="btnConsultarProfesor" disabled onclick="gestionUsuarios.consultarProfesor()">
+                                    📋 Consultar
+                                </button>
+                                <button class="btn-accion btn-modificar" id="btnModificarProfesor" disabled onclick="gestionUsuarios.modificarProfesor()">
+                                    ✏️ Modificar
+                                </button>
+                                <button class="btn-accion btn-cambiar-estado" id="btnAsignarCuentaProfesor" disabled onclick="gestionUsuarios.asignarCuenta('profesor')">
+                                    🔑 Asignar Cuenta
+                                </button>
+                            </div>
+                        </div>
+                        <div class="usuarios-list" id="profesoresList">
+                            <!-- Los profesores se cargan dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Acudientes -->
+                <div id="tab-acudientes-inline" class="tab-content-inline">
+                    <div class="contenido-principal-inline" style="padding-top: 0;">
+                        <div class="acciones-header">
+                            <h3>Acudientes</h3>
+                            <div class="acciones-buttons">
+                                <button class="btn-accion btn-crear" onclick="gestionUsuarios.crearAcudiente()">
+                                    ➕ Crear Cuenta
+                                </button>
+                                <button class="btn-accion btn-consultar" id="btnConsultarAcudiente" disabled onclick="gestionUsuarios.consultarAcudiente()">
+                                    📋 Consultar
+                                </button>
+                                <button class="btn-accion btn-modificar" id="btnModificarAcudiente" disabled onclick="gestionUsuarios.modificarAcudiente()">
+                                    ✏️ Modificar
+                                </button>
+                                <button class="btn-accion btn-cambiar-estado" id="btnAsignarCuentaAcudiente" disabled onclick="gestionUsuarios.asignarCuenta('acudiente')">
+                                    🔑 Asignar Cuenta
+                                </button>
+                            </div>
+                        </div>
+                        <div class="usuarios-list" id="acudientesList">
+                            <!-- Los acudientes se cargan dinámicamente -->
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -119,11 +197,169 @@
             <div class="actions-bar" style="justify-content: flex-end; margin-top: 20px;">
                 <button class="btn btn-cancelar" id="cancelarModal">Cancelar</button>
                 <button class="btn btn-primary" id="confirmarModal">Confirmar</button>
-                
             </div>
         </div>
     </div>
 
+    <!-- Modal Consultar Usuario -->
+    <div id="modalConsultar" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="modalConsultarTitulo">Detalles del Usuario</h3>
+                <button class="btn-close-modal" onclick="gestionUsuarios.cerrarModalConsultar()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalConsultarBody">
+                <!-- Se llena dinámicamente -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="gestionUsuarios.cerrarModalConsultar()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Modificar Usuario -->
+    <div id="modalModificar" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="modalModificarTitulo">Modificar Usuario</h3>
+                <button class="btn-close-modal" onclick="gestionUsuarios.cerrarModalModificar()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formModificar">
+                    <!-- Se llena dinámicamente -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="gestionUsuarios.cerrarModalModificar()">Cancelar</button>
+                <button class="btn btn-primary" onclick="gestionUsuarios.guardarModificacion()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Crear Grupo -->
+    <div id="modalCrearGrupo" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Crear Nuevo Grupo</h3>
+                <button class="btn-close-modal" onclick="gestionUsuarios.cerrarModalCrearGrupo()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formCrearGrupo">
+                    <div class="form-group">
+                        <label for="grupoGrado">Grado *</label>
+                        <select id="grupoGrado" class="form-control" required>
+                            <option value="">Seleccione...</option>
+                            <option value="parvulos">Párvulos</option>
+                            <option value="caminadores">Caminadores</option>
+                            <option value="pre_jardin">Pre-jardín</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="grupoIdentificador">Identificador *</label>
+                        <input type="text" id="grupoIdentificador" class="form-control" placeholder="Ej: Grupo A" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="grupoProfesor">Profesor Asignado</label>
+                        <select id="grupoProfesor" class="form-control">
+                            <option value="">Sin profesor asignado</option>
+                            <!-- Se llena dinámicamente -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="grupoCapacidad">Capacidad *</label>
+                        <input type="number" id="grupoCapacidad" class="form-control" min="1" placeholder="Ej: 20" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="gestionUsuarios.cerrarModalCrearGrupo()">Cancelar</button>
+                <button class="btn btn-primary" onclick="gestionUsuarios.guardarGrupo()">Crear Grupo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Crear Cuenta -->
+    <div id="modalCrearCuenta" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="modalCrearCuentaTitulo">Crear Cuenta</h3>
+                <button class="btn-close-modal" onclick="gestionUsuarios.cerrarModalCrearCuenta()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formCrearCuenta">
+                    <!-- Se llena dinámicamente según el tipo de usuario -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="gestionUsuarios.cerrarModalCrearCuenta()">Cancelar</button>
+                <button class="btn btn-primary" onclick="gestionUsuarios.guardarCuenta()">Crear Cuenta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cambiar Estado -->
+    <div id="modalCambiarEstado" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cambiar Estado del Estudiante</h3>
+                <button class="btn-close-modal" onclick="gestionUsuarios.cerrarModalCambiarEstado()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="estudianteNombreEstado"></p>
+                <div class="form-group">
+                    <label for="nuevoEstado">Nuevo Estado *</label>
+                    <select id="nuevoEstado" class="form-control" required>
+                        <option value="">Seleccione...</option>
+                        <option value="aspirante">Aspirante</option>
+                        <option value="aceptado">Aceptado</option>
+                        <option value="rechazado">Rechazado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="gestionUsuarios.cerrarModalCambiarEstado()">Cancelar</button>
+                <button class="btn btn-primary" onclick="gestionUsuarios.guardarCambioEstado()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Asignar Cuenta -->
+    <div id="modalAsignarCuenta" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Asignar Cuenta de Acceso</h3>
+                <button class="btn-close-modal" onclick="gestionUsuarios.cerrarModalAsignarCuenta()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="usuarioNombreAsignar"></p>
+                <div class="form-group">
+                    <label for="cuentaExistente">Cuenta Existente</label>
+                    <select id="cuentaExistente" class="form-control">
+                        <option value="">Seleccione una cuenta...</option>
+                        <!-- Se llena dinámicamente -->
+                    </select>
+                </div>
+                <hr style="margin: 20px 0; border: 1px solid #e0e0e0;">
+                <h5 style="margin-bottom: 15px; color: #666;">O crear nueva cuenta:</h5>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nuevaCuentaUsername">Nuevo Usuario</label>
+                        <input type="text" id="nuevaCuentaUsername" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevaCuentaPassword">Nueva Contraseña</label>
+                        <input type="password" id="nuevaCuentaPassword" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="gestionUsuarios.cerrarModalAsignarCuenta()">Cancelar</button>
+                <button class="btn btn-primary" onclick="gestionUsuarios.guardarAsignacionCuenta()">Asignar</button>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/gestion-usuarios.js}"></script>
     <script th:src="@{/js/dashboard.js}"></script>
 </body>
 </html>

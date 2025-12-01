@@ -102,7 +102,8 @@ public class GestionAcudientesController {
             }
             return ResponseEntity.ok(acudiente);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            AcudienteResponse errResponse = new AcudienteResponse(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errResponse);
         }
     }
 

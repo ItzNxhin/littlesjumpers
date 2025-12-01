@@ -79,6 +79,7 @@ public class AcudienteEntityMapper {
         }
 
         AcudienteResponse response = new AcudienteResponse(
+            acudiente.getId(),
             acudiente.getNombre(),
             acudiente.getApellido(),
             acudiente.getCedula(),

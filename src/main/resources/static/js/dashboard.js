@@ -68,16 +68,23 @@ function inicializarDashboard() {
         item.addEventListener('click', (e) => {
             e.preventDefault();
 
+            const sectionId = item.getAttribute('data-section');
+
             menuItems.forEach(mi => mi.classList.remove('active'));
             sections.forEach(sec => sec.classList.remove('active'));
 
             item.classList.add('active');
-            const sectionId = item.getAttribute('data-section');
             const section = document.getElementById(sectionId);
             if (section) {
                 section.classList.add('active');
+
+                // Cargar datos según la sección activa
                 if (sectionId === 'entrevistas') {
                     loadEntrevistas();
+                } else if (sectionId === 'gestion-usuarios') {
+                    if (typeof gestionUsuarios !== 'undefined') {
+                        gestionUsuarios.activarSeccion();
+                    }
                 }
             }
         });

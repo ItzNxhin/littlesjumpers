@@ -31,8 +31,6 @@ public class EstudianteEntityMapper {
         estudiante.setFecha_nacimiento(request.getFecha_nacimiento());
         estudiante.setGrado_aplicado(request.getGrado_aplicado());
         estudiante.setEstado(request.getEstado());
-        estudiante.setGrupo(request.getGrupo());
-
         // Mapeo de relaciones
         if (acudiente != null) {
             estudiante.setAcudiente(acudiente);
@@ -61,7 +59,9 @@ public class EstudianteEntityMapper {
         response.setFecha_nacimiento(estudiante.getFecha_nacimiento());
         response.setGrado_aplicado(estudiante.getGrado_aplicado());
         response.setEstado(estudiante.getEstado());
-        response.setGrupo(estudiante.getGrupo());
+
+        if(estudiante.getGrupo()!= null)
+            response.setGrupo_id(estudiante.getGrupo().getId());
 
         // Mapear ID del acudiente si existe
         if (estudiante.getAcudiente() != null) {
@@ -117,9 +117,6 @@ public class EstudianteEntityMapper {
         }
         if (request.getEstado() != null) {
             estudiante.setEstado(request.getEstado());
-        }
-        if (request.getGrupo() != null) {
-            estudiante.setGrupo(request.getGrupo());
         }
     }
 }
