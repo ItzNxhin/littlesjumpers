@@ -137,10 +137,11 @@ public class EstudianteService {
 
             Estudiante estudiante = estudianteExistente.get();
             EstudianteEntityMapper.updateEntity(estudiante, request);
-            Optional<Grupo> grupoAasignar = grupoRepository.findById(id);
+            Optional<Grupo> grupoAasignar = grupoRepository.findById(request.getGrupo_id());
 
-            if (request.getGrupo_id() != 0 && grupoAasignar.isPresent())
+            if (grupoAasignar.isPresent())
                 estudiante.setGrupo(grupoAasignar.get());
+            else estudiante.setGrupo(null);
             
             Estudiante estudianteActualizado = estudianteRepository.save(estudiante);
 

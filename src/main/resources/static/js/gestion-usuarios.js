@@ -238,6 +238,11 @@ class GestionUsuarios {
         if (btnDescargar) btnDescargar.disabled = false;
     }
 
+    actualizarEstudiantes(grupo){
+        this.cargarEstudiantesGrupo(grupo)
+        this.renderizarEstudiantes()
+    }
+
     limpiarSeleccionEstudiante() {
         this.selectedUsuarioId = null;
         this.selectedUsuarioType = null;
@@ -830,6 +835,7 @@ class GestionUsuarios {
                     grupo_id: grupoId ? parseInt(grupoId) : null
                 };
                 url = `/api/gestion/estudiantes/${this.selectedUsuarioId}`;
+                this.actualizarEstudiantes(grupoId);
             } else if (this.selectedUsuarioType === 'profesor') {
                 data = {
                     nombre: document.getElementById('modNombre').value,

@@ -116,6 +116,7 @@ public class GestionEstudiantesController {
             @RequestBody EstudianteRequest request) {
         try {
             EstudianteResponse estudiante = estudianteService.actualizar(id, request);
+
             if (estudiante == null) {
                 return ResponseEntity.notFound().build();
             }
