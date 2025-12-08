@@ -62,6 +62,20 @@ public class GestionEstudiantesController {
     }
 
     /**
+     * Obtiene estudiantes por grupo
+     * GET /api/gestion/estudiantes/grupo/{grupoId}
+     */
+    @GetMapping("/grupo/{grupoId}")
+    public ResponseEntity<List<EstudianteResponse>> listarPorGrupo(@PathVariable Integer grupoId) {
+        try {
+            List<EstudianteResponse> estudiantes = estudianteService.obtenerPorGrupo(grupoId);
+            return ResponseEntity.ok(estudiantes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
      * Obtiene estudiantes por estado
      * GET /api/gestion/estudiantes/estado/{estado}
      */

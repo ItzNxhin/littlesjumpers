@@ -191,4 +191,23 @@ public class GrupoService {
             throw new RuntimeException("Error inesperado al obtener entidad: " + e.getMessage(), e);
         }
     }
+
+    /**
+     * Obtiene el grupo asignado a un profesor
+     */
+    @Transactional(readOnly = true)
+    public Grupo obtenerGrupoPorProfesor(Integer profesorId) {
+        try {
+            List<Grupo> grupos = grupoRepository.findByProfesorId(profesorId);
+            if (grupos.isEmpty()) {
+                return null;
+            }
+            // Un profesor debería tener solo un grupo asignado
+            return grupos.get(0);
+        } catch (DataAccessException e) {
+            throw new DatabaseException("Error al obtener grupo del profesor", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al obtener grupo: " + e.getMessage(), e);
+        }
+    }
 }

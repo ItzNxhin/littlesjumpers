@@ -256,7 +256,7 @@ public class EstudianteService {
 
     /**
      * Obtiene estudiantes sin grupo asignado
-     * 
+     *
      * @return Lista de EstudianteResponse
      */
     @Transactional(readOnly = true)
@@ -269,6 +269,24 @@ public class EstudianteService {
             return EstudianteEntityMapper.toResponseList(sinGrupo);
         } catch (DataAccessException e) {
             throw new DatabaseException("Error al consultar estudiantes sin grupo", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al obtener estudiantes: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Obtiene estudiantes por grupo
+     *
+     * @param grupoId ID del grupo
+     * @return Lista de EstudianteResponse
+     */
+    @Transactional(readOnly = true)
+    public List<EstudianteResponse> obtenerPorGrupo(Integer grupoId) {
+        try {
+            List<Estudiante> estudiantes = estudianteRepository.findByGrupoId(grupoId);
+            return EstudianteEntityMapper.toResponseList(estudiantes);
+        } catch (DataAccessException e) {
+            throw new DatabaseException("Error al consultar estudiantes por grupo", e);
         } catch (Exception e) {
             throw new RuntimeException("Error inesperado al obtener estudiantes: " + e.getMessage(), e);
         }
