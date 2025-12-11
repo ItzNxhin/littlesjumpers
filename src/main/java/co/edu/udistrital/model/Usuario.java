@@ -22,7 +22,7 @@ public class Usuario {
 
     @OneToOne
     @JoinColumn(name = "cuenta_id", nullable = true, unique = true)
-    private Cuenta Cuenta;
+    private Cuenta cuenta;
 
     @Column
     private String nombre;
@@ -45,11 +45,11 @@ public class Usuario {
     }
 
     public Cuenta getCuenta() {
-        return Cuenta;
+        return cuenta;
     }
 
     public void setCuenta(Cuenta cuenta) {
-        Cuenta = cuenta;
+        this.cuenta = cuenta;
     }
 
     public String getNombre() {

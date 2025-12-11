@@ -6,8 +6,10 @@ import co.edu.udistrital.exception.CuentaInactivaException;
 import co.edu.udistrital.exception.CredencialesInvalidasException;
 import co.edu.udistrital.exception.DatabaseException;
 import co.edu.udistrital.model.Cuenta;
+import co.edu.udistrital.model.Usuario;
 import co.edu.udistrital.model.Cuenta.TipoRol;
 import co.edu.udistrital.repository.CuentaRepository;
+import co.edu.udistrital.repository.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,13 @@ public class AutenticacionService {
     @Autowired
     private CuentaRepository cuentaRepository;
 
+    @Autowired
+    private UsuariosRepository usuariosRepository;
+
     @Transactional(readOnly = true)
     public LoginResponse iniciarSesion(LoginRequest loginRequest) {
         try {
-            // 1. Consultar usuario en la base de datos
+            // 1. Consultar cuenta en la base de datos
             Cuenta cuenta = cuentaRepository.findByNombreUsuario(loginRequest.getUsername())
                     .orElseThrow(() -> new CredencialesInvalidasException("El usuario no existe"));
 
@@ -36,14 +41,18 @@ public class AutenticacionService {
                 throw new CuentaInactivaException("La cuenta está inactiva. Contacte al administrador.");
             }
 
-            // 4. Determinar la URL de redirección según el rol
+            // 4. Buscar el usuario asociado a la cuenta
+            Usuario usuario = usuariosRepository.findByCuenta(cuenta)
+                    .orElseThrow(() -> new RuntimeException("No se encontró un usuario asociado a esta cuenta"));
+
+            // 5. Determinar la URL de redirección según el rol
             String redirectUrl = determinarRedireccion(cuenta.getRol());
 
-            // 5. Retornar respuesta exitosa
+            // 6. Retornar respuesta exitosa con el ID del usuario (profesor/acudiente)
             return new LoginResponse(
                     true,
                     "Inicio de sesión exitoso",
-                    cuenta.getId(),
+                    usuario.getId(),
                     cuenta.getNombreUsuario(),
                     cuenta.getRol(),
                     redirectUrl

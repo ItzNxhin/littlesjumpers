@@ -10,8 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import co.edu.udistrital.dto.CalificacionRequest;
 import co.edu.udistrital.dto.CalificacionResponse;
 import co.edu.udistrital.dto.EstudianteResponse;
+import co.edu.udistrital.dto.ObservacionRequest;
+import co.edu.udistrital.dto.ObservacionResponse;
+import co.edu.udistrital.model.Estudiante;
 import co.edu.udistrital.model.Grupo;
+import co.edu.udistrital.model.Observador;
 import co.edu.udistrital.model.Profesor;
+import co.edu.udistrital.repository.ObservadorRepository;
 
 @Service
 public class AcademicoProfesorService {
@@ -27,6 +32,9 @@ public class AcademicoProfesorService {
 
     @Autowired
     private ProfesorService profesorService;
+
+    @Autowired
+    private ObservadorRepository observadorRepository;
 
     /**
      * Obtiene los estudiantes del grupo asignado a un profesor
@@ -122,6 +130,61 @@ public class AcademicoProfesorService {
                     .toList();
         } catch (Exception e) {
             throw new RuntimeException("Error al obtener calificaciones del grupo: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Crea una nueva observación sobre el comportamiento de un estudiante
+     *
+     * @param profesorId ID del profesor que registra la observación
+     * @param request Datos de la observación
+     * @return ObservacionResponse con los datos de la observación creada
+     */
+    @Transactional
+    public ObservacionResponse crearObservacion(Integer profesorId, ObservacionRequest request) {
+        try {
+            // Validar que el profesor existe
+            Profesor profesor = profesorService.obtenerEntidadPorId(profesorId)
+                    .orElseThrow(() -> new RuntimeException("Profesor no encontrado"));
+
+            // Validar que el estudiante pertenece al grupo del profesor
+            List<EstudianteResponse> estudiantesDelGrupo = obtenerEstudiantesDelGrupoProfesor(profesorId);
+            boolean estudianteEnGrupo = estudiantesDelGrupo.stream()
+                    .anyMatch(e -> e.getId() == request.getEstudianteId());
+
+            if (!estudianteEnGrupo) {
+                throw new RuntimeException("El estudiante no pertenece al grupo del profesor");
+            }
+
+            // Obtener el estudiante
+            Estudiante estudiante = estudianteService.obtenerEntidadPorId(request.getEstudianteId())
+                    .orElseThrow(() -> new RuntimeException("Estudiante no encontrado"));
+
+            // Crear la observación
+            Observador observacion = new Observador(estudiante, profesor, request.getTexto());
+            Observador guardada = observadorRepository.save(observacion);
+
+            return new ObservacionResponse(guardada);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear observación: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Obtiene todas las observaciones de un estudiante
+     *
+     * @param estudianteId ID del estudiante
+     * @return Lista de observaciones del estudiante ordenadas por fecha descendente
+     */
+    @Transactional(readOnly = true)
+    public List<ObservacionResponse> obtenerObservacionesEstudiante(Integer estudianteId) {
+        try {
+            List<Observador> observaciones = observadorRepository.findByEstudianteIdOrderByFechaDesc(estudianteId);
+            return observaciones.stream()
+                    .map(ObservacionResponse::new)
+                    .toList();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al obtener observaciones del estudiante: " + e.getMessage(), e);
         }
     }
 }

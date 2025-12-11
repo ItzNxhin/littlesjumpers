@@ -77,6 +77,13 @@ loginForm.addEventListener('submit', async (e) => {
             sessionStorage.setItem('username', data.username);
             sessionStorage.setItem('rol', data.rol);
 
+            // Guardar el ID específico según el rol (profesor o acudiente)
+            if (data.rol === 'profesor') {
+                sessionStorage.setItem('profesorId', data.userId);
+            } else if (data.rol === 'acudiente') {
+                sessionStorage.setItem('acudienteId', data.userId);
+            }
+
             // Redirigir según el rol después de 1 segundo
             setTimeout(() => {
                 window.location.href = data.redirectUrl;
