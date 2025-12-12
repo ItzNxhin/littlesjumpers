@@ -3,9 +3,11 @@ package co.edu.udistrital.controller;
 import co.edu.udistrital.dto.CalificacionRequest;
 import co.edu.udistrital.dto.CalificacionResponse;
 import co.edu.udistrital.dto.EstudianteResponse;
+import co.edu.udistrital.dto.HojaVidaResponse;
 import co.edu.udistrital.dto.ObservacionRequest;
 import co.edu.udistrital.dto.ObservacionResponse;
 import co.edu.udistrital.service.AcademicoProfesorService;
+import co.edu.udistrital.service.HojaVidaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ public class AcademicoProfesorController {
 
     @Autowired
     private AcademicoProfesorService academicoProfesorService;
+
+    @Autowired
+    private HojaVidaService hojaVidaService;
 
     /**
      * Obtiene los estudiantes del grupo asignado al profesor
@@ -142,6 +147,26 @@ public class AcademicoProfesorController {
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
             error.put("message", "Error al obtener observaciones");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    /**
+     * Obtiene la hoja de vida de un estudiante
+     * GET /api/profesor/estudiantes/{estudianteId}/hoja-vida
+     */
+    @GetMapping("/estudiantes/{estudianteId}/hoja-vida")
+    public ResponseEntity<?> obtenerHojaVidaEstudiante(@PathVariable Integer estudianteId) {
+        try {
+            HojaVidaResponse hojaVida = hojaVidaService.obtenerOCrearPorEstudiante(estudianteId);
+            return ResponseEntity.ok(hojaVida);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Error al obtener hoja de vida");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }

@@ -63,6 +63,8 @@ public class AutenticacionService {
         } catch (DataAccessException e) {
             throw new DatabaseException("Error al consultar la base de datos", e);
         } catch (Exception e) {
+            System.out.println(e.getStackTrace());
+            System.out.println(e.getMessage());
             throw new RuntimeException("Error inesperado durante la autenticación", e);
         }
     }

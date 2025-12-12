@@ -18,10 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.udistrital.dto.EstudianteRequest;
 import co.edu.udistrital.dto.EstudianteResponse;
+import co.edu.udistrital.dto.HojaVidaRequest;
+import co.edu.udistrital.dto.HojaVidaResponse;
 import co.edu.udistrital.model.Estudiante.Estado;
 import co.edu.udistrital.model.Grupo;
 import co.edu.udistrital.service.EstudianteService;
 import co.edu.udistrital.service.GrupoService;
+import co.edu.udistrital.service.HojaVidaService;
 
 @RestController
 @RequestMapping("/api/gestion/estudiantes")
@@ -32,6 +35,9 @@ public class GestionEstudiantesController {
 
     @Autowired
     private GrupoService grupoService;
+
+    @Autowired
+    private HojaVidaService hojaVidaService;
 
     /**
      * Obtiene todos los estudiantes
@@ -199,6 +205,43 @@ public class GestionEstudiantesController {
                 return ResponseEntity.notFound().build();
             }
             return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // ========== ENDPOINTS PARA HOJA DE VIDA ==========
+
+    /**
+     * Obtiene la hoja de vida de un estudiante
+     * Si no existe, la crea automáticamente
+     * GET /api/gestion/estudiantes/{id}/hoja-vida
+     */
+    @GetMapping("/{id}/hoja-vida")
+    public ResponseEntity<HojaVidaResponse> obtenerHojaVida(@PathVariable Integer id) {
+        try {
+            HojaVidaResponse hojaVida = hojaVidaService.obtenerOCrearPorEstudiante(id);
+            return ResponseEntity.ok(hojaVida);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Actualiza la hoja de vida de un estudiante
+     * PUT /api/gestion/estudiantes/{id}/hoja-vida
+     */
+    @PutMapping("/{id}/hoja-vida")
+    public ResponseEntity<HojaVidaResponse> actualizarHojaVida(
+            @PathVariable Integer id,
+            @RequestBody HojaVidaRequest request) {
+        try {
+            HojaVidaResponse hojaVida = hojaVidaService.actualizar(id, request);
+            return ResponseEntity.ok(hojaVida);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

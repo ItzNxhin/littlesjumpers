@@ -26,9 +26,9 @@
                     <span class="icon">👥</span>
                     <span>Gestión de Usuarios</span>
                 </a>
-                <a href="#" class="menu-item" data-section="gestion-aspirantes">
-                    <span class="icon">👨‍🎓</span>
-                    <span>Gestión de Aspirantes</span>
+                <a href="#" class="menu-item" data-section="reuniones">
+                    <span class="icon">📅</span>
+                    <span>Reuniones</span>
                 </a>
                 <a href="#" class="menu-item active" data-section="entrevistas">
                     <span class="icon">🗣️</span>
@@ -143,17 +143,31 @@
                 </div>
             </div>
 
-            <!-- Gestión de Aspirantes (placeholder por ahora) -->
-            <div id="gestion-aspirantes" class="section">
-                <h2>Gestión de Aspirantes</h2>
-                <p class="section-description">Administración completa de estudiantes aspirantes (registro, edición, etc).</p>
-                <div class="empty-state-card">
-                    <div class="card-icon">🚧</div>
-                    <h3>Sección en desarrollo</h3>
-                    <p>Pronto disponible...</p>
+            <!-- Reuniones / Citaciones -->
+            <div id="reuniones" class="section">
+                <h2>Gestión de Reuniones</h2>
+                <p class="section-description">Crear citaciones masivas o selectivas para reuniones con usuarios.</p>
+
+                <div class="actions-bar">
+                    <button class="btn btn-primary" onclick="reuniones.abrirModalCrearCitacion()">📝 Nueva Citación</button>
+                </div>
+
+                <div class="card-grid" style="margin-top: 30px;">
+                    <div class="card" onclick="reuniones.seleccionarTipo('masiva')" style="cursor: pointer; text-align: center;">
+                        <h3>📢 Reunión Masiva</h3>
+                        <p>Enviar citación a todos los usuarios registrados</p>
+                    </div>
+                    <div class="card" onclick="reuniones.seleccionarTipo('selectiva')" style="cursor: pointer; text-align: center;">
+                        <h3>👤 Reunión Selectiva</h3>
+                        <p>Enviar citación a usuarios específicos</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 40px;">Historial de Citaciones</h3>
+                <div class="table-container" id="citacionesTableContainer">
+                    <!-- Se llena dinámicamente -->
                 </div>
             </div>
-        
 
             <!-- Gestión de Entrevistas -->
             <div id="entrevistas" class="section active">
@@ -359,7 +373,62 @@
         </div>
     </div>
 
+    <!-- Modal Crear Citación -->
+    <div id="modalCrearCitacion" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="modalCitacionTitulo">Crear Citación</h3>
+                <button class="btn-close-modal" onclick="reuniones.cerrarModalCrearCitacion()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formCrearCitacion">
+                    <div class="form-group">
+                        <label for="citacionTipo">Tipo de Reunión *</label>
+                        <select id="citacionTipo" class="form-control" required onchange="reuniones.cambiarTipoCitacion()">
+                            <option value="">Seleccione...</option>
+                            <option value="masiva">Masiva (Todos los usuarios)</option>
+                            <option value="selectiva">Selectiva (Usuarios específicos)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="citacionAsunto">Asunto *</label>
+                        <input type="text" id="citacionAsunto" class="form-control" placeholder="Ej: Reunión de padres de familia" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="citacionCuerpo">Mensaje *</label>
+                        <textarea id="citacionCuerpo" class="form-control" rows="5" placeholder="Escriba el mensaje de la citación..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="citacionFecha">Fecha de la Reunión *</label>
+                        <input type="datetime-local" id="citacionFecha" class="form-control" required>
+                    </div>
+
+                    <div class="form-group" id="grupoDestinatarios" style="display: none;">
+                        <label>Seleccionar Destinatarios *</label>
+                        <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; padding: 10px;">
+                            <div style="margin-bottom: 10px;">
+                                <input type="text" id="searchUsuarios" class="form-control" placeholder="Buscar usuario...">
+                            </div>
+                            <div id="listaUsuarios">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                        <small class="form-text" style="color: #666;">Seleccione al menos un destinatario</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="reuniones.cerrarModalCrearCitacion()">Cancelar</button>
+                <button class="btn btn-primary" onclick="reuniones.enviarCitacion()">Enviar Citación</button>
+            </div>
+        </div>
+    </div>
+
     <script th:src="@{/js/gestion-usuarios.js}"></script>
     <script th:src="@{/js/dashboard.js}"></script>
+    <script th:src="@{/js/reuniones.js}"></script>
 </body>
 </html>

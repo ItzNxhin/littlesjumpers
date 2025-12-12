@@ -293,8 +293,26 @@ public class EstudianteService {
     }
 
     /**
+     * Obtiene estudiantes por acudiente
+     *
+     * @param acudienteId ID del acudiente
+     * @return Lista de EstudianteResponse
+     */
+    @Transactional(readOnly = true)
+    public List<EstudianteResponse> obtenerPorAcudiente(Integer acudienteId) {
+        try {
+            List<Estudiante> estudiantes = estudianteRepository.findByAcudienteId(acudienteId);
+            return EstudianteEntityMapper.toResponseList(estudiantes);
+        } catch (DataAccessException e) {
+            throw new DatabaseException("Error al consultar estudiantes por acudiente", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al obtener estudiantes: " + e.getMessage(), e);
+        }
+    }
+
+    /**
      * Obtiene la entidad Estudiante por su ID (para uso interno de servicios)
-     * 
+     *
      * @param id ID del estudiante
      * @return Optional<Estudiante>
      */

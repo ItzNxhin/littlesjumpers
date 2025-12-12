@@ -17,4 +17,9 @@ public interface EstudianteRepository extends JpaRepository<Estudiante, Integer>
     List<Estudiante> findByGrupo(Grupo grupo);
 
     List<Estudiante> findByGrupoId(Integer grupoId);
+
+    /**
+     * Busca todos los estudiantes de un acudiente por ID del acudiente
+     */
+    List<Estudiante> findByAcudienteId(Integer acudienteId);
 }

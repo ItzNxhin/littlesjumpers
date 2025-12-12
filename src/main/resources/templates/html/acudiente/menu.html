@@ -18,109 +18,22 @@
 
     <main class="dashboard-container">
         <aside class="sidebar">
-            <h3>Mis Opciones</h3>
-            <nav class="menu">
-                <a href="#" class="menu-item active" data-section="estudiantes">
-                    <span class="icon">👨‍🎓</span>
-                    <span>Mis Estudiantes</span>
-                </a>
-                <a href="#" class="menu-item" data-section="consultas">
-                    <span class="icon">📋</span>
-                    <span>Consultas</span>
-                </a>
-                <a href="#" class="menu-item" data-section="perfil">
-                    <span class="icon">👤</span>
-                    <span>Mi Perfil</span>
-                </a>
+            <h3>Mis Hijos</h3>
+            <nav class="menu" id="listaHijos">
+                <div class="empty-state">
+                    <p>Cargando...</p>
+                </div>
             </nav>
         </aside>
 
-        <section class="content">
-            <!-- Sección Estudiantes -->
-            <div id="estudiantes" class="section active">
-                <h2>Mis Estudiantes</h2>
-                <p class="section-description">Selecciona un estudiante para ver sus opciones</p>
-
-                <div class="student-list" id="studentList">
-                    <div class="empty-state-card">
-                        <div class="icon">📚</div>
-                        <p>No hay estudiantes asignados</p>
-                        <small>Contacte con la administración para registrar estudiantes</small>
-                    </div>
-                </div>
-
-                <!-- Panel de opciones del estudiante (se muestra al seleccionar) -->
-                <div id="studentOptions" class="student-options" style="display: none;">
-                    <h3>Opciones para: <span id="selectedStudentName"></span></h3>
-                    <div class="card-grid">
-                        <div class="card">
-                            <div class="card-icon">📊</div>
-                            <h3>Observador</h3>
-                            <p>Ver el observador del estudiante</p>
-                            <button class="btn btn-primary">Ver Observador</button>
-                        </div>
-                        <div class="card">
-                            <div class="card-icon">📝</div>
-                            <h3>Calificaciones</h3>
-                            <p>Consultar calificaciones y boletines</p>
-                            <button class="btn btn-primary">Ver Calificaciones</button>
-                        </div>
-                        <div class="card">
-                            <div class="card-icon">📅</div>
-                            <h3>Asistencia</h3>
-                            <p>Ver registro de asistencia</p>
-                            <button class="btn btn-primary">Ver Asistencia</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección Consultas -->
-            <div id="consultas" class="section">
-                <h2>Consultas</h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <div class="card-icon">📋</div>
-                        <h3>Historial Académico</h3>
-                        <p>Ver historial completo de los estudiantes</p>
-                        <button class="btn btn-primary">Consultar</button>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon">📞</div>
-                        <h3>Contactar Profesores</h3>
-                        <p>Información de contacto de profesores</p>
-                        <button class="btn btn-primary">Ver Contactos</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección Perfil -->
-            <div id="perfil" class="section">
-                <h2>Mi Perfil</h2>
-                <div class="profile-card">
-                    <div class="profile-header">
-                        <div class="profile-avatar">👤</div>
-                        <div class="profile-info">
-                            <h3 id="profileName">Nombre del Acudiente</h3>
-                            <p id="profileEmail">correo@ejemplo.com</p>
-                        </div>
-                    </div>
-                    <div class="profile-details">
-                        <div class="detail-row">
-                            <span class="label">Usuario:</span>
-                            <span class="value" id="profileUsername">-</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">Rol:</span>
-                            <span class="value">Acudiente</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary">Editar Perfil</button>
-                </div>
+        <section class="content" id="content">
+            <div class="empty-state-card">
+                <div class="icon">👨‍🎓</div>
+                <p>Selecciona un estudiante para ver su información</p>
             </div>
         </section>
     </main>
 
-    <script th:src="@{/js/dashboard.js}"></script>
+    <script th:src="@{/js/acudiente.js}"></script>
 </body>
 </html>

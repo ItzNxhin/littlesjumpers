@@ -14,13 +14,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.edu.udistrital.dto.CitacionRequest;
+import co.edu.udistrital.dto.CitacionResponse;
 import co.edu.udistrital.dto.EstudianteResponse;
 import co.edu.udistrital.dto.PreinscripcionRequest;
 import co.edu.udistrital.dto.PreinscripcionResponse;
+import co.edu.udistrital.dto.UsuarioSimpleResponse;
 import co.edu.udistrital.model.Preinscripcion.EstadoEntrevista;
+import co.edu.udistrital.service.CitacionService;
 import co.edu.udistrital.service.EmailService;
 import co.edu.udistrital.service.EntrevistasService;
 import jakarta.validation.Valid;
+
+import java.util.HashMap;
+import java.util.Map;
 
 //TODO Mejorar nombre de endpoints
 @RestController
@@ -33,6 +40,9 @@ public class AdminController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private CitacionService citacionService;
 
     /**
      * Obtener todos los estudiantes aspirantes
@@ -196,6 +206,95 @@ public class AdminController {
             System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al rechazar estudiante: " + e.getMessage());
+        }
+    }
+
+    // ========== ENDPOINTS PARA CITACIONES ==========
+
+    /**
+     * Obtiene todos los usuarios disponibles para citaciones
+     * GET /api/admin/citaciones/usuarios
+     */
+    @GetMapping("/citaciones/usuarios")
+    public ResponseEntity<?> obtenerUsuariosParaCitaciones() {
+        try {
+            List<UsuarioSimpleResponse> usuarios = citacionService.obtenerTodosLosUsuarios();
+            return ResponseEntity.ok(usuarios);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Error al obtener usuarios");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    /**
+     * Crea una nueva citación (masiva o selectiva)
+     * POST /api/admin/citaciones
+     */
+    @PostMapping("/citaciones")
+    public ResponseEntity<?> crearCitacion(@RequestBody CitacionRequest request) {
+        try {
+            // TODO: Obtener el adminId de la sesión actual
+            // Por ahora, usamos un valor fijo
+            Integer adminId = 1;
+
+            CitacionResponse response = citacionService.crearCitacion(request, adminId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Error al crear citación: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    /**
+     * Obtiene todas las citaciones
+     * GET /api/admin/citaciones
+     */
+    @GetMapping("/citaciones")
+    public ResponseEntity<?> obtenerTodasLasCitaciones() {
+        try {
+            List<CitacionResponse> citaciones = citacionService.obtenerTodasLasCitaciones();
+            return ResponseEntity.ok(citaciones);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Error al obtener citaciones");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    /**
+     * Obtiene una citación por ID
+     * GET /api/admin/citaciones/{id}
+     */
+    @GetMapping("/citaciones/{id}")
+    public ResponseEntity<?> obtenerCitacionPorId(@PathVariable Integer id) {
+        try {
+            CitacionResponse citacion = citacionService.obtenerPorId(id);
+            if (citacion == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(citacion);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Error al obtener citación");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
 }
