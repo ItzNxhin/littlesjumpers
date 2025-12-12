@@ -152,6 +152,53 @@ public class AcademicoProfesorController {
     }
 
     /**
+     * Actualiza una observación existente
+     * PUT /api/profesor/{profesorId}/observacion/{observacionId}
+     */
+    @PutMapping("/{profesorId}/observacion/{observacionId}")
+    public ResponseEntity<?> actualizarObservacion(
+            @PathVariable Integer profesorId,
+            @PathVariable Integer observacionId,
+            @RequestBody ObservacionRequest request) {
+        try {
+            ObservacionResponse observacion = academicoProfesorService.actualizarObservacion(profesorId, observacionId, request);
+            return ResponseEntity.ok(observacion);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Error al actualizar observación");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    /**
+     * Elimina una observación
+     * DELETE /api/profesor/{profesorId}/observacion/{observacionId}
+     */
+    @DeleteMapping("/{profesorId}/observacion/{observacionId}")
+    public ResponseEntity<?> eliminarObservacion(
+            @PathVariable Integer profesorId,
+            @PathVariable Integer observacionId) {
+        try {
+            academicoProfesorService.eliminarObservacion(profesorId, observacionId);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Observación eliminada exitosamente");
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Error al eliminar observación");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    /**
      * Obtiene la hoja de vida de un estudiante
      * GET /api/profesor/estudiantes/{estudianteId}/hoja-vida
      */

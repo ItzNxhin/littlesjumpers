@@ -129,6 +129,12 @@ class GestionAcademicaProfesor {
         `).join('');
     }
 
+    verListaEstudiantesFormal() {
+        // Redirigir a la página de lista formal con parámetros
+        const url = `/lista-estudiantes?tipo=profesor&usuarioId=${this.profesorId}`;
+        window.open(url, '_blank');
+    }
+
     seleccionarEstudiante(estudianteId) {
         this.selectedEstudianteId = estudianteId;
 
@@ -403,13 +409,41 @@ class GestionAcademicaProfesor {
             if (!porEstudiante[cal.estudianteId]) {
                 porEstudiante[cal.estudianteId] = {
                     nombre: cal.estudianteNombre,
-                    calificaciones: []
+                    calificaciones: [],
+                    periodos: new Set()
                 };
             }
             porEstudiante[cal.estudianteId].calificaciones.push(cal);
+            porEstudiante[cal.estudianteId].periodos.add(cal.periodo);
+        });
+
+        // Crear botones de boletín formal por estudiante y periodo
+        let botonesBoletinHTML = '';
+        Object.keys(porEstudiante).forEach(estudianteId => {
+            const estudiante = porEstudiante[estudianteId];
+            const periodosArray = Array.from(estudiante.periodos).sort();
+
+            botonesBoletinHTML += `
+                <div class="student-bulletin-section" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #2c3e50;">${estudiante.nombre}</h4>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        ${periodosArray.map(periodo => `
+                            <button class="btn btn-primary"
+                                    onclick="gestionProfesor.verBoletinFormal(${estudianteId}, ${periodo})"
+                                    style="padding: 8px 16px;">
+                                📄 Ver Boletín Periodo ${periodo}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
         });
 
         container.innerHTML = `
+            <h3 style="margin-bottom: 15px;">Boletines Formales por Estudiante</h3>
+            ${botonesBoletinHTML}
+
+            <h3 style="margin: 30px 0 15px 0;">Detalle de Calificaciones</h3>
             <div class="table-container">
                 <table class="data-table">
                     <thead>
@@ -435,6 +469,12 @@ class GestionAcademicaProfesor {
                 </table>
             </div>
         `;
+    }
+
+    verBoletinFormal(estudianteId, periodo) {
+        // Redirigir a la página del boletín formal con parámetros
+        const url = `/boletin?estudianteId=${estudianteId}&periodo=${periodo}&tipo=profesor&usuarioId=${this.profesorId}`;
+        window.open(url, '_blank');
     }
 
     filtrarBoletines() {
@@ -497,42 +537,73 @@ class GestionAcademicaProfesor {
         const seccion = document.getElementById('perfil');
 
         seccion.innerHTML = `
-            <h2>Observador del Estudiante</h2>
+            <div class="observador-container">
+                <div class="observador-header">
+                    <h2>📋 Observador del Estudiante</h2>
+                    <p class="observador-subtitle">Registra y gestiona observaciones sobre el comportamiento</p>
+                </div>
 
-            <div class="profile-card">
-                <div class="profile-header">
-                    <div class="profile-avatar">👨‍🎓</div>
-                    <div class="profile-info">
-                        <h3>${estudiante.nombre} ${estudiante.apellido}</h3>
-                        <p>Grado: ${estudiante.grado_aplicado}</p>
+                <!-- Tarjeta de Perfil del Estudiante -->
+                <div class="estudiante-card">
+                    <div class="estudiante-card-header">
+                        <div class="estudiante-avatar">👨‍🎓</div>
+                        <div class="estudiante-card-info">
+                            <h3>${estudiante.nombre} ${estudiante.apellido}</h3>
+                            <div class="estudiante-details">
+                                <span class="detail-badge">
+                                    <strong>Código:</strong> ${estudiante.tarjeta_identidad || 'N/A'}
+                                </span>
+                                <span class="detail-badge">
+                                    <strong>Grado:</strong> ${estudiante.grado_aplicado || 'N/A'}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card" style="margin-top: 20px;">
-                <h3>Nueva Observación</h3>
-                <form id="formObservacion" style="max-width: 800px;">
-                    <div class="form-group">
-                        <label for="textoObservacion">Observación sobre el comportamiento *</label>
-                        <textarea id="textoObservacion" class="form-control" rows="4"
-                                  placeholder="Escriba aquí la observación sobre el comportamiento del estudiante (positivo o negativo)..."
-                                  required></textarea>
+                <!-- Formulario Nueva Observación -->
+                <div class="observador-form-section">
+                    <div class="section-header">
+                        <h3>✍️ Nueva Observación</h3>
+                        <p>Añade una nueva observación sobre el comportamiento del estudiante</p>
                     </div>
+                    <form id="formObservacion" class="observador-form">
+                        <div class="form-group">
+                            <label for="textoObservacion">Observación sobre el comportamiento *</label>
+                            <textarea id="textoObservacion" class="form-control form-textarea-lg"
+                                      placeholder="Escriba aquí sus observaciones... (máximo 500 caracteres)"
+                                      maxlength="500"
+                                      required></textarea>
+                            <small class="char-counter"><span id="charCount">0</span>/500</small>
+                        </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Guardar Observación</button>
-                        <button type="button" class="btn btn-secondary" onclick="gestionProfesor.cambiarSeccion('estudiantes')">
-                            Cancelar
-                        </button>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                ✓ Guardar Observación
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-lg" onclick="gestionProfesor.cambiarSeccion('estudiantes')">
+                                ✕ Volver
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Historial de Observaciones -->
+                <div class="observador-history-section">
+                    <div class="section-header">
+                        <h3>📚 Historial de Observaciones</h3>
+                        <p>Todas las observaciones registradas para este estudiante</p>
                     </div>
-                </form>
-            </div>
-
-            <div class="card" style="margin-top: 20px;">
-                <h3>Historial de Observaciones</h3>
-                <div id="listaObservaciones"></div>
+                    <div id="listaObservaciones" class="observations-container"></div>
+                </div>
             </div>
         `;
+
+        // Contador de caracteres
+        const textarea = document.getElementById('textoObservacion');
+        textarea.addEventListener('input', () => {
+            document.getElementById('charCount').textContent = textarea.value.length;
+        });
 
         // Configurar event listener del formulario
         document.getElementById('formObservacion').addEventListener('submit', (e) => {
@@ -603,38 +674,160 @@ class GestionAcademicaProfesor {
         if (!container) return;
 
         if (observaciones.length === 0) {
-            container.innerHTML = '<p class="empty-state">No hay observaciones registradas para este estudiante</p>';
+            container.innerHTML = `
+                <div class="empty-observations">
+                    <div class="empty-icon">📝</div>
+                    <p>No hay observaciones registradas</p>
+                    <small>Las observaciones que registres aparecerán aquí</small>
+                </div>
+            `;
             return;
         }
 
         container.innerHTML = `
-            <div class="table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Profesor</th>
-                            <th>Observación</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${observaciones.map(obs => `
-                            <tr>
-                                <td>${new Date(obs.fecha).toLocaleDateString('es-CO', {
+            <div class="observations-list">
+                ${observaciones.map((obs, index) => `
+                    <div class="observation-item" data-observacion-id="${obs.id}">
+                        <div class="observation-header">
+                            <div class="observation-number">
+                                <span class="obs-badge">#${observaciones.length - index}</span>
+                            </div>
+                            <div class="observation-meta">
+                                <span class="obs-date">📅 ${new Date(obs.fecha).toLocaleDateString('es-CO', {
                                     year: 'numeric',
                                     month: 'long',
-                                    day: 'numeric',
+                                    day: 'numeric'
+                                })}</span>
+                                <span class="obs-time">⏰ ${new Date(obs.fecha).toLocaleTimeString('es-CO', {
                                     hour: '2-digit',
                                     minute: '2-digit'
-                                })}</td>
-                                <td>${obs.profesorNombre}</td>
-                                <td style="text-align: left; max-width: 500px;">${obs.texto}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+                                })}</span>
+                                <span class="obs-profesor">👨‍🏫 ${obs.profesorNombre}</span>
+                            </div>
+                            <div class="observation-actions">
+                                <button class="btn-action btn-edit" onclick="gestionProfesor.editarObservacion(${obs.id}, '${obs.texto.replace(/'/g, "\\'")}')">
+                                    ✏️
+                                </button>
+                                <button class="btn-action btn-delete" onclick="gestionProfesor.eliminarObservacion(${obs.id})">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                        <div class="observation-body">
+                            <p class="obs-texto">${obs.texto}</p>
+                        </div>
+                    </div>
+                `).join('')}
             </div>
         `;
+    }
+
+    editarObservacion(observacionId, textoActual) {
+        // Crear un modal o formulario para editar
+        const formularioEdicion = `
+            <div class="modal-overlay" id="modalEdicion" onclick="if(event.target === this) gestionProfesor.cerrarModalEdicion()">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Editar Observación</h3>
+                        <button class="btn-close" onclick="gestionProfesor.cerrarModalEdicion()">×</button>
+                    </div>
+                    <form id="formEditarObservacion" class="form-edicion">
+                        <div class="form-group">
+                            <label for="textoEdicion">Observación *</label>
+                            <textarea id="textoEdicion" class="form-control" rows="4" required>${textoActual}</textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            <button type="button" class="btn btn-secondary" onclick="gestionProfesor.cerrarModalEdicion()">
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+
+        // Insertar el modal en el DOM
+        document.body.insertAdjacentHTML('beforeend', formularioEdicion);
+
+        // Configurar el event listener del formulario
+        document.getElementById('formEditarObservacion').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nuevoTexto = document.getElementById('textoEdicion').value;
+            await this.guardarCambiosObservacion(observacionId, nuevoTexto);
+        });
+
+        // Almacenar el ID de la observación siendo editada
+        this.observacionEditando = observacionId;
+    }
+
+    cerrarModalEdicion() {
+        const modal = document.getElementById('modalEdicion');
+        if (modal) {
+            modal.remove();
+        }
+        this.observacionEditando = null;
+    }
+
+    async guardarCambiosObservacion(observacionId, nuevoTexto) {
+        try {
+            const response = await fetch(
+                `/api/profesor/${this.profesorId}/observacion/${observacionId}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        estudianteId: this.selectedEstudianteId,
+                        texto: nuevoTexto
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al actualizar la observación');
+            }
+
+            this.mostrarExito('Observación actualizada exitosamente');
+            this.cerrarModalEdicion();
+
+            // Recargar las observaciones
+            this.cargarObservaciones(this.selectedEstudianteId);
+        } catch (error) {
+            this.mostrarError(error.message);
+        }
+    }
+
+    async eliminarObservacion(observacionId) {
+        if (!confirm('¿Está seguro de que desea eliminar esta observación? Esta acción no se puede deshacer.')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `/api/profesor/${this.profesorId}/observacion/${observacionId}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al eliminar la observación');
+            }
+
+            this.mostrarExito('Observación eliminada exitosamente');
+
+            // Recargar las observaciones
+            this.cargarObservaciones(this.selectedEstudianteId);
+        } catch (error) {
+            this.mostrarError(error.message);
+        }
     }
 
     // ========== UTILIDADES ==========

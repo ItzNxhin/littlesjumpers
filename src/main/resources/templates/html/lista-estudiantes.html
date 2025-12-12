@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Estudiantes - Little Jumpers</title>
+    <link rel="stylesheet" th:href="@{/css/lista-estudiantes.css}">
+</head>
+<body>
+    <!-- Indicador de carga -->
+    <div id="loadingIndicator" class="loading-indicator no-print" style="text-align: center; padding: 50px;">
+        <div style="font-size: 48px;">⏳</div>
+        <p>Cargando datos...</p>
+    </div>
+
+    <!-- Botones de acción (no se imprimen) -->
+    <div class="action-buttons no-print" id="actionButtons" style="display: none;">
+        <button class="btn btn-secondary" onclick="volver()">← Volver</button>
+        <button class="btn btn-primary" onclick="descargarPDF()">📥 Descargar PDF</button>
+    </div>
+
+    <!-- Contenido de la lista (se imprime) -->
+    <div class="lista-container" id="listaContainer" style="display: none;">
+        <!-- Encabezado institucional -->
+        <header class="lista-header-inst">
+            <div class="logo-section">
+                <div class="logo-placeholder">
+                    <span style="font-size: 48px;">🎓</span>
+                </div>
+            </div>
+            <div class="institution-info">
+                <h1>Little Jumpers</h1>
+                <p>Jardín Infantil</p>
+                <p class="subtitle">Lista de Estudiantes</p>
+            </div>
+            <div class="logo-section">
+                <!-- Espacio para logo adicional si se requiere -->
+            </div>
+        </header>
+
+        <!-- Información del responsable -->
+        <section class="responsible-info">
+            <h2 id="responsibleTitle">Información</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong id="responsibleLabel">Usuario:</strong>
+                    <span id="responsibleName">-</span>
+                </div>
+                <div class="info-item">
+                    <strong>Fecha de Generación:</strong>
+                    <span id="fechaGeneracion">-</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resumen -->
+        <section class="summary-section">
+            <div class="summary-card">
+                <h3>Total de Estudiantes</h3>
+                <div class="total-display" id="totalEstudiantes">0</div>
+            </div>
+        </section>
+
+        <!-- Lista de estudiantes -->
+        <section class="students-section">
+            <h2>Listado de Estudiantes</h2>
+            <div id="studentsTableContainer">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Pie de página -->
+        <footer class="lista-footer">
+            <p>Documento generado el <span id="fechaGeneracionFooter">-</span></p>
+            <p class="footer-note">Little Jumpers - Formando futuros líderes</p>
+        </footer>
+    </div>
+
+    <script th:src="@{/js/lista-estudiantes.js}"></script>
+</body>
+</html>

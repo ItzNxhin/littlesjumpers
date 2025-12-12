@@ -25,4 +25,14 @@ public class Home {
     public String docenteMenu() {
         return "html/docente/menu";
     }
+
+    @GetMapping("/boletin")
+    public String boletin() {
+        return "html/boletin";
+    }
+
+    @GetMapping("/lista-estudiantes")
+    public String listaEstudiantes() {
+        return "html/lista-estudiantes";
+    }
 }

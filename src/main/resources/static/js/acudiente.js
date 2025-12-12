@@ -81,6 +81,12 @@ class GestionAcudiente {
         });
     }
 
+    verListaHijosFormal() {
+        // Redirigir a la página de lista formal con parámetros
+        const url = `/lista-estudiantes?tipo=acudiente&usuarioId=${this.acudienteId}`;
+        window.open(url, '_blank');
+    }
+
     seleccionarHijo(estudianteId) {
         this.selectedEstudianteId = estudianteId;
         const hijo = this.hijos.find(h => h.id === estudianteId);
@@ -257,6 +263,11 @@ class GestionAcudiente {
                         <p>Selecciona un periodo para ver el boletín</p>
                     </div>
                 </div>
+                <div id="boletinActions" style="display: none; margin-top: 15px; text-align: center;">
+                    <button class="btn btn-primary" onclick="gestionAcudiente.verBoletinFormal()" style="padding: 10px 20px;">
+                        📄 Ver Boletín Formal (Descargar PDF)
+                    </button>
+                </div>
             </div>
 
             <div class="form-actions" style="margin-top: 20px;">
@@ -270,6 +281,7 @@ class GestionAcudiente {
         document.querySelectorAll('.btn-periodo').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const periodo = parseInt(e.target.dataset.periodo);
+                this.currentPeriodo = periodo; // Guardar periodo actual
                 this.cargarBoletin(periodo);
 
                 // Marcar como activo
@@ -277,6 +289,17 @@ class GestionAcudiente {
                 e.target.classList.add('active');
             });
         });
+    }
+
+    verBoletinFormal() {
+        if (!this.selectedEstudianteId || !this.currentPeriodo) {
+            alert('Por favor, seleccione un periodo primero');
+            return;
+        }
+
+        // Redirigir a la página del boletín formal con parámetros
+        const url = `/boletin?estudianteId=${this.selectedEstudianteId}&periodo=${this.currentPeriodo}&tipo=acudiente&usuarioId=${this.acudienteId}`;
+        window.open(url, '_blank');
     }
 
     async cargarBoletin(periodo) {
@@ -297,6 +320,12 @@ class GestionAcudiente {
             const calificacionesPeriodo = calificaciones.filter(c => c.periodo === periodo);
 
             this.renderizarBoletin(calificacionesPeriodo, periodo);
+
+            // Mostrar botón de boletín formal si hay calificaciones
+            const boletinActions = document.getElementById('boletinActions');
+            if (boletinActions) {
+                boletinActions.style.display = calificacionesPeriodo.length > 0 ? 'block' : 'none';
+            }
 
         } catch (error) {
             console.error('Error:', error);

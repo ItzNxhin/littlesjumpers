@@ -61,7 +61,7 @@ class GestionUsuarios {
         this.cargarDatosTab(tab);
 
         const botones = [
-        'btnConsultarEstudiante', 'btnModificarEstudiante', 'btnCambiarEstado', 'btnDescargarLista',
+        'btnConsultarEstudiante', 'btnModificarEstudiante', 'btnCambiarEstado',
         'btnConsultarProfesor', 'btnModificarProfesor', 'btnAsignarCuentaProfesor',
         'btnConsultarAcudiente', 'btnModificarAcudiente', 'btnAsignarCuentaAcudiente'
         ];
@@ -259,7 +259,6 @@ class GestionUsuarios {
         if (btnConsultar) btnConsultar.disabled = true;
         if (btnModificar) btnModificar.disabled = true;
         if (btnCambiarEstado) btnCambiarEstado.disabled = true;
-        if (btnDescargar) btnDescargar.disabled = true;
     }
 
     async cargarProfesores() {
@@ -1180,28 +1179,9 @@ class GestionUsuarios {
     async descargarLista() {
         if (!this.selectedGrupoId) return;
 
-        try {
-            const grupoNombre = this.selectedGrupoId === 'sin-grupo'
-                ? 'Sin_Grupo'
-                : this.grupos.find(g => g.id === this.selectedGrupoId)?.identificador || 'Grupo';
-
-            let csv = 'Nombre,Apellido,Tarjeta Identidad,Fecha Nacimiento,Grado,Estado\n';
-
-            this.estudiantes.forEach(est => {
-                csv += `${est.nombre},${est.apellido},${est.tarjeta_identidad},${est.fecha_nacimiento},${est.grado_aplicado},${est.estado}\n`;
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `Lista_${grupoNombre}_${new Date().toISOString().split('T')[0]}.csv`;
-            link.click();
-
-            this.mostrarExito('Lista descargada correctamente');
-        } catch (error) {
-            console.error('Error:', error);
-            this.mostrarError('Error al descargar la lista');
-        }
+        // Abrir la página de lista formal con parámetros para admin
+        const url = `/lista-estudiantes?tipo=admin&grupoId=${this.selectedGrupoId}`;
+        window.open(url, '_blank');
     }
 
     // ========== ASIGNAR CUENTA A USUARIO EXISTENTE ==========

@@ -75,7 +75,7 @@
                                     <button class="btn-accion btn-cambiar-estado" id="btnCambiarEstado" disabled onclick="gestionUsuarios.cambiarEstadoEstudiante()">
                                         🔄 Cambiar Estado
                                     </button>
-                                    <button class="btn-accion btn-descargar" id="btnDescargarLista" disabled onclick="gestionUsuarios.descargarLista()">
+                                    <button class="btn-accion btn-descargar" id="btnDescargarLista" onclick="gestionUsuarios.descargarLista()">
                                         📥 Descargar Lista
                                     </button>
                                 </div>
@@ -325,8 +325,8 @@
                     <select id="nuevoEstado" class="form-control" required>
                         <option value="">Seleccione...</option>
                         <option value="aspirante">Aspirante</option>
-                        <option value="aceptado">Aceptado</option>
-                        <option value="rechazado">Rechazado</option>
+                        <option value="aceptado">Aceptado (Habilitado)</option>
+                        <option value="rechazado">Rechazado (Inhabilitado)</option>
                     </select>
                 </div>
             </div>

@@ -400,3 +400,389 @@
         font-size: 0.9rem;
     }
 }
+/* ------------------------- */
+/*  MODAL DE EDICIÓN         */
+/* ------------------------- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-close:hover {
+    color: #333;
+}
+
+.form-edicion {
+    padding: 20px;
+}
+
+/* Botones de acción para tablas */
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    margin-right: 5px;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+/* ========================================== */
+/*     ESTILOS PARA OBSERVADOR             */
+/* ========================================== */
+
+.observador-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.observador-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.observador-header h2 {
+    color: #1a1a1a;
+    margin: 0 0 10px 0;
+    font-size: 2rem;
+}
+
+.observador-subtitle {
+    color: #666;
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* Tarjeta del Estudiante */
+.estudiante-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    color: white;
+}
+
+.estudiante-card-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.estudiante-avatar {
+    font-size: 3rem;
+    min-width: 70px;
+    text-align: center;
+}
+
+.estudiante-card-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.5rem;
+}
+
+.estudiante-details {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.detail-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    backdrop-filter: blur(10px);
+}
+
+/* Secciones */
+.observador-form-section,
+.observador-history-section {
+    margin-bottom: 30px;
+}
+
+.section-header {
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ffca28;
+    padding-bottom: 15px;
+}
+
+.section-header h3 {
+    margin: 0 0 5px 0;
+    color: #1a1a1a;
+    font-size: 1.3rem;
+}
+
+.section-header p {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* Formulario */
+.observador-form {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.form-textarea-lg {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    resize: vertical;
+}
+
+.form-textarea-lg:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.char-counter {
+    display: block;
+    text-align: right;
+    margin-top: 5px;
+    color: #999;
+    font-size: 0.85rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    margin-top: 15px;
+}
+
+.btn-lg {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+}
+
+/* Historial de Observaciones */
+.observations-container {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.observations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.observation-item {
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.observation-item:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.observation-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.observation-number {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.obs-badge {
+    display: inline-block;
+    background: #667eea;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.observation-meta {
+    display: flex;
+    gap: 15px;
+    flex: 1;
+    font-size: 0.9rem;
+    color: #666;
+    flex-wrap: wrap;
+}
+
+.obs-date,
+.obs-time,
+.obs-profesor {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.observation-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.btn-action {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.btn-edit {
+    color: #667eea;
+}
+
+.btn-edit:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.btn-delete {
+    color: #dc3545;
+}
+
+.btn-delete:hover {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.observation-body {
+    padding: 20px;
+}
+
+.obs-texto {
+    margin: 0;
+    color: #333;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.empty-observations {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.empty-observations p {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.empty-observations small {
+    font-size: 0.9rem;
+    color: #999;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .estudiante-card-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .observation-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .observation-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .observation-actions {
+        width: 100%;
+        margin-left: 0;
+        justify-content: flex-start;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-lg {
+        width: 100%;
+    }
+
+    .observador-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .detail-badge {
+        font-size: 0.85rem;
+    }
+}

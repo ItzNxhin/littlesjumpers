@@ -1,0 +1,427 @@
+/* Estilos generales para el boletín */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Indicador de carga */
+.loading-indicator {
+    margin-top: 20px;
+}
+
+/* Botones de acción */
+.action-buttons {
+    max-width: 210mm;
+    margin: 0 auto 20px;
+    display: flex !important;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.action-buttons .btn {
+    padding: 10px 20px !important;
+    border: none !important;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block !important;
+}
+
+.action-buttons .btn-primary {
+    background-color: #3498db !important;
+    color: white !important;
+}
+
+.action-buttons .btn-primary:hover {
+    background-color: #2980b9 !important;
+}
+
+.action-buttons .btn-secondary {
+    background-color: #95a5a6 !important;
+    color: white !important;
+}
+
+.action-buttons .btn-secondary:hover {
+    background-color: #7f8c8d !important;
+}
+
+/* Contenedor principal del boletín */
+.boletin-container {
+    max-width: 210mm; /* Ancho A4 */
+    min-height: 297mm; /* Alto A4 */
+    margin: 0 auto;
+    background: white;
+    padding: 20mm;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Encabezado institucional */
+.boletin-header-inst {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.logo-section {
+    width: 80px;
+    text-align: center;
+}
+
+.logo-placeholder {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ecf0f1;
+    border-radius: 50%;
+}
+
+.institution-info {
+    text-align: center;
+    flex: 1;
+}
+
+.institution-info h1 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.institution-info p {
+    margin: 5px 0;
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+.institution-info .subtitle {
+    color: #3498db;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+/* Información del estudiante */
+.student-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.student-info h2 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 18px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    gap: 10px;
+}
+
+.info-item strong {
+    color: #2c3e50;
+    min-width: 80px;
+}
+
+.info-item span {
+    color: #34495e;
+}
+
+/* Resumen de calificaciones */
+.summary-section {
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.summary-card h3 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.average-display {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.average-description {
+    font-size: 16px;
+    opacity: 0.9;
+    margin: 10px 0 0 0;
+}
+
+/* Sección de calificaciones */
+.grades-section {
+    margin-bottom: 30px;
+}
+
+.category-section {
+    margin-bottom: 25px;
+    page-break-inside: avoid;
+}
+
+.category-header {
+    background: #34495e;
+    color: white;
+    padding: 12px 15px;
+    border-radius: 6px 6px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.category-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.category-average {
+    font-size: 14px;
+    background: rgba(255,255,255,0.2);
+    padding: 4px 12px;
+    border-radius: 12px;
+}
+
+.grades-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    border-top: none;
+}
+
+.grades-table thead {
+    background: #ecf0f1;
+}
+
+.grades-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #2c3e50;
+    border: 1px solid #ddd;
+}
+
+.grades-table td {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    color: #34495e;
+}
+
+.grades-table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.grade-value {
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.grade-excellent { color: #27ae60; }
+.grade-good { color: #2ecc71; }
+.grade-fair { color: #f39c12; }
+.grade-acceptable { color: #e67e22; }
+.grade-low { color: #e74c3c; }
+
+/* Observaciones */
+.observations-section {
+    margin-bottom: 30px;
+}
+
+.observations-section h2 {
+    color: #2c3e50;
+    font-size: 18px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.observation-box {
+    background: #f8f9fa;
+    padding: 15px;
+    border-left: 4px solid #3498db;
+    border-radius: 4px;
+    min-height: 80px;
+}
+
+.observation-box p {
+    margin: 0;
+    color: #34495e;
+    line-height: 1.6;
+}
+
+/* Firmas */
+.signatures-section {
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+.signature-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.signature-box {
+    flex: 1;
+    text-align: center;
+}
+
+.signature-line {
+    border-top: 2px solid #2c3e50;
+    margin-bottom: 10px;
+    margin-top: 60px;
+}
+
+.signature-box p {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+/* Pie de página */
+.boletin-footer {
+    text-align: center;
+    color: #7f8c8d;
+    font-size: 12px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.boletin-footer p {
+    margin: 5px 0;
+}
+
+.footer-note {
+    font-style: italic;
+}
+
+/* Estilos para impresión */
+@media print {
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .boletin-container {
+        display: block !important;
+        max-width: 100%;
+        box-shadow: none;
+        padding: 15mm;
+        margin: 0;
+    }
+
+    #loadingIndicator {
+        display: none !important;
+    }
+
+    #actionButtons {
+        display: none !important;
+    }
+
+    .category-section {
+        page-break-inside: avoid;
+    }
+
+    /* Forzar colores en impresión */
+    .summary-card {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .category-header {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .grade-excellent {
+        color: #27ae60 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .grade-good {
+        color: #2ecc71 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .grade-fair {
+        color: #f39c12 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .grade-acceptable {
+        color: #e67e22 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .grade-low {
+        color: #e74c3c !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Asegurar que las tablas no se corten */
+    table {
+        page-break-inside: avoid;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+}
+
+/* Responsive para pantallas pequeñas */
+@media screen and (max-width: 768px) {
+    .boletin-container {
+        padding: 15px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .signature-row {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .boletin-header-inst {
+        flex-direction: column;
+        gap: 15px;
+    }
+}

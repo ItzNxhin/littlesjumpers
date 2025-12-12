@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boletín de Calificaciones - Little Jumpers</title>
+    <link rel="stylesheet" th:href="@{/css/boletin.css}">
+</head>
+<body>
+    <!-- Indicador de carga -->
+    <div id="loadingIndicator" class="loading-indicator no-print" style="text-align: center; padding: 50px;">
+        <div style="font-size: 48px;">⏳</div>
+        <p>Cargando boletín...</p>
+    </div>
+
+    <!-- Botones de acción (no se imprimen) -->
+    <div class="action-buttons no-print" id="actionButtons" style="display: none;">
+        <button class="btn btn-secondary" onclick="volver()">← Volver</button>
+        <button class="btn btn-primary" onclick="descargarPDF()">📥 Descargar PDF</button>
+    </div>
+
+    <!-- Contenido del boletín (se imprime) -->
+    <div class="boletin-container" id="boletinContainer" style="display: none;">
+        <!-- Encabezado institucional -->
+        <header class="boletin-header-inst">
+            <div class="logo-section">
+                <div class="logo-placeholder">
+                    <span style="font-size: 48px;">🎓</span>
+                </div>
+            </div>
+            <div class="institution-info">
+                <h1>Little Jumpers</h1>
+                <p>Jardín Infantil</p>
+                <p class="subtitle">Boletín de Calificaciones</p>
+            </div>
+            <div class="logo-section">
+                <!-- Espacio para logo adicional si se requiere -->
+            </div>
+        </header>
+
+        <!-- Información del estudiante -->
+        <section class="student-info">
+            <h2>Información del Estudiante</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>Nombre:</strong>
+                    <span id="estudianteNombre">-</span>
+                </div>
+                <div class="info-item">
+                    <strong>Grado:</strong>
+                    <span id="estudianteGrado">-</span>
+                </div>
+                <div class="info-item">
+                    <strong>Periodo:</strong>
+                    <span id="boletinPeriodo">-</span>
+                </div>
+                <div class="info-item">
+                    <strong>Año:</strong>
+                    <span id="boletinAnio">2024</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resumen de calificaciones -->
+        <section class="summary-section">
+            <div class="summary-card">
+                <h3>Promedio General</h3>
+                <div class="average-display" id="promedioGeneral">0.0</div>
+                <p class="average-description" id="descripcionPromedio">-</p>
+            </div>
+        </section>
+
+        <!-- Calificaciones por categoría -->
+        <section class="grades-section" id="gradesSection">
+            <!-- Se llena dinámicamente -->
+        </section>
+
+        <!-- Observaciones generales -->
+        <section class="observations-section">
+            <h2>Observaciones Generales</h2>
+            <div class="observation-box" id="observacionesGenerales">
+                <p>El estudiante muestra un desempeño acorde a su nivel.</p>
+            </div>
+        </section>
+
+        <!-- Firmas -->
+        <section class="signatures-section">
+            <div class="signature-row">
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Director(a)</strong></p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Docente</strong></p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Acudiente</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pie de página -->
+        <footer class="boletin-footer">
+            <p>Documento generado el <span id="fechaGeneracion">-</span></p>
+            <p class="footer-note">Little Jumpers - Formando futuros líderes</p>
+        </footer>
+    </div>
+
+    <script th:src="@{/js/boletin.js}"></script>
+</body>
+</html>

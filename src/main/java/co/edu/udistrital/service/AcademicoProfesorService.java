@@ -187,4 +187,59 @@ public class AcademicoProfesorService {
             throw new RuntimeException("Error al obtener observaciones del estudiante: " + e.getMessage(), e);
         }
     }
+
+    /**
+     * Actualiza una observación existente
+     *
+     * @param profesorId ID del profesor que actualiza
+     * @param observacionId ID de la observación a actualizar
+     * @param request Nuevos datos de la observación
+     * @return ObservacionResponse con los datos actualizados
+     */
+    @Transactional
+    public ObservacionResponse actualizarObservacion(Integer profesorId, Integer observacionId, ObservacionRequest request) {
+        try {
+            // Obtener la observación
+            Observador observacion = observadorRepository.findById(observacionId)
+                    .orElseThrow(() -> new RuntimeException("Observación no encontrada"));
+
+            // Validar que el profesor es quien creó la observación
+            if (!(observacion.getProfesor().getId() == profesorId)) {
+                throw new RuntimeException("Solo puede modificar sus propias observaciones");
+            }
+
+            // Actualizar el texto
+            observacion.setTexto(request.getTexto());
+            Observador actualizada = observadorRepository.save(observacion);
+
+            return new ObservacionResponse(actualizada);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar observación: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Elimina una observación
+     *
+     * @param profesorId ID del profesor que elimina
+     * @param observacionId ID de la observación a eliminar
+     */
+    @Transactional
+    public void eliminarObservacion(Integer profesorId, Integer observacionId) {
+        try {
+            // Obtener la observación
+            Observador observacion = observadorRepository.findById(observacionId)
+                    .orElseThrow(() -> new RuntimeException("Observación no encontrada"));
+
+            // Validar que el profesor es quien creó la observación
+            if (!(observacion.getProfesor().getId() == profesorId)) {
+                throw new RuntimeException("Solo puede eliminar sus propias observaciones");
+            }
+
+            // Eliminar la observación
+            observadorRepository.delete(observacion);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al eliminar observación: " + e.getMessage(), e);
+        }
+    }
 }
