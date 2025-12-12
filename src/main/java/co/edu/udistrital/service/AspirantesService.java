@@ -36,6 +36,9 @@ public class AspirantesService {
     @Autowired
     private PreinscripcionRepository preinscripcionRepository;
 
+    @Autowired
+    private HojaVidaService hojaVidaService;
+
     @Transactional(readOnly = true)
     public Boolean existenciaAcudiente(UsuarioRequest usuarioRequest) {
         try {
@@ -97,11 +100,14 @@ public class AspirantesService {
             requestParaServicio.setEstado(estudiante.getEstado());
             requestParaServicio.setAcudiente_id(acudiente.getId());
 
+            
             EstudianteResponse estudianteResponse = estudianteService.crear(requestParaServicio);
 
-            // Obtener la entidad guardada para crear la preinscripción
+            // Obtener la entidad guardada para crear la preinscripción y la hoja de vida
             Optional<Estudiante> estudianteGuardadoOpt = estudianteService.obtenerEntidadPorId(estudianteResponse.getId());
             if (estudianteGuardadoOpt.isPresent()) {
+                // Crear la Hoja de Vida
+                hojaVidaService.obtenerOCrearPorEstudiante(estudianteGuardadoOpt.get());
                 preinscripcionRepository.save(new Preinscripcion(estudianteGuardadoOpt.get()));
             }
 

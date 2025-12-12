@@ -13,7 +13,7 @@ public class HojaVidaResponse {
     }
 
     public HojaVidaResponse(HojaVida hojaVida) {
-        this.estudianteId = hojaVida.getEstudianteId();
+        this.estudianteId = hojaVida.getEstudiante().getId();
         this.estudianteNombre = hojaVida.getEstudiante().getNombre() + " " + hojaVida.getEstudiante().getApellido();
         this.estadoSalud = hojaVida.getEstadoSalud();
         this.alergias = hojaVida.getAlergias();

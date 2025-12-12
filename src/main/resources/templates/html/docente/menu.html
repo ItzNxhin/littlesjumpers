@@ -20,75 +20,28 @@
         <aside class="sidebar">
             <h3>Menú Docente</h3>
             <nav class="menu">
-                <a href="#" class="menu-item" data-section="estudiantes">
+                <a href="#" class="menu-item active" data-section="estudiantes">
                     <span class="icon">👨‍🎓</span>
                     <span>Estudiantes</span>
                 </a>
-                <a href="#" class="menu-item" data-section="calificaciones">
-                    <span class="icon">📝</span>
-                    <span>Calificaciones</span>
-                </a>
-                <a href="#" class="menu-item active" data-section="mis-cursos">
+                <a href="#" class="menu-item" data-section="mis-cursos">
                     <span class="icon">📚</span>
                     <span>Boletines</span>
                 </a>
                 <a href="#" class="menu-item" data-section="perfil">
-                    <span class="icon">👤</span>
+                    <span class="icon">📋</span>
                     <span>Observador</span>
                 </a>
             </nav>
         </aside>
 
         <section class="content">
-            <!-- Sección Mis Cursos -->
-            <div id="mis-cursos" class="section active">
-                <h2>Mis Cursos</h2>
-                <p class="section-description">Selecciona un curso para gestionar su información</p>
-
-                <div class="course-list">
-                    <div class="empty-state-card">
-                        <div class="icon">📖</div>
-                        <p>No hay cursos asignados</p>
-                        <small>Contacte con la administración para la asignación de cursos</small>
-                    </div>
-                </div>
-
-                <!-- Panel de opciones del curso (se muestra al seleccionar) -->
-                <div id="courseOptions" class="course-options" style="display: none;">
-                    <h3>Curso: <span id="selectedCourseName"></span></h3>
-                    <div class="card-grid">
-                        <div class="card">
-                            <div class="card-icon">👥</div>
-                            <h3>Lista de Estudiantes</h3>
-                            <p>Ver y gestionar estudiantes del curso</p>
-                            <button class="btn btn-primary">Ver Lista</button>
-                        </div>
-                        <div class="card">
-                            <div class="card-icon">📊</div>
-                            <h3>Calificaciones</h3>
-                            <p>Registrar y consultar calificaciones</p>
-                            <button class="btn btn-primary">Gestionar</button>
-                        </div>
-                        <div class="card">
-                            <div class="card-icon">📅</div>
-                            <h3>Asistencia</h3>
-                            <p>Tomar y ver asistencia del curso</p>
-                            <button class="btn btn-primary">Gestionar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Sección Estudiantes -->
-            <div id="estudiantes" class="section">
-                <h2>Todos los Estudiantes</h2>
-                <p class="section-description">Muestra todos los estudiantes de tus cursos asignados</p>
+            <div id="estudiantes" class="section active">
+                <h2>Estudiantes</h2>
+                <p class="section-description">Listado de estudiantes de tu grupo</p>
 
                 <div class="actions-bar">
-                    <input type="search" placeholder="Buscar estudiante..." class="search-input">
-                    <select class="filter-select">
-                        <option value="">Todos los cursos</option>
-                    </select>
                     <button class="btn btn-primary" onclick="gestionProfesor.verListaEstudiantesFormal()">
                         📄 Descargar listado
                     </button>
@@ -98,74 +51,28 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Código</th>
+                                <th>Cédula</th>
                                 <th>Nombre</th>
-                                <th>Curso</th>
-                                <th>Promedio</th>
-                                <th>Acciones</th>
+                                <th>Grado</th>
+                                <th>Ver Calificaciones</th>
+                                <th>Seleccionar</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="5" class="empty-state">No hay estudiantes registrados</td>
-                            </tr>
+                        <tbody id="estudiantesList">
+                            <!-- Se llena dinámicamente -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Sección Calificaciones -->
-            <div id="calificaciones" class="section">
-                <h2>Gestión de Calificaciones</h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <div class="card-icon">✍️</div>
-                        <h3>Registrar Notas</h3>
-                        <p>Ingresar nuevas calificaciones</p>
-                        <button class="btn btn-primary">Registrar</button>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon">📊</div>
-                        <h3>Ver Reportes</h3>
-                        <p>Consultar reportes de calificaciones</p>
-                        <button class="btn btn-primary">Ver Reportes</button>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon">📈</div>
-                        <h3>Estadísticas</h3>
-                        <p>Ver estadísticas del rendimiento</p>
-                        <button class="btn btn-primary">Ver Estadísticas</button>
-                    </div>
-                </div>
+            <!-- Sección Boletines (se rellena dinámicamente) -->
+            <div id="mis-cursos" class="section">
+                <!-- Se rellena dinámicamente por JavaScript -->
             </div>
 
-            <!-- Sección Perfil -->
+            <!-- Sección Observador (se rellena dinámicamente) -->
             <div id="perfil" class="section">
-                <h2>Mi Perfil</h2>
-                <div class="profile-card">
-                    <div class="profile-header">
-                        <div class="profile-avatar">👨‍🏫</div>
-                        <div class="profile-info">
-                            <h3 id="profileName">Nombre del Profesor</h3>
-                            <p id="profileEmail">correo@ejemplo.com</p>
-                        </div>
-                    </div>
-                    <div class="profile-details">
-                        <div class="detail-row">
-                            <span class="label">Usuario:</span>
-                            <span class="value" id="profileUsername">-</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">Rol:</span>
-                            <span class="value">Docente</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">Especialidad:</span>
-                            <span class="value" id="profileSpecialty">-</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary">Editar Perfil</button>
-                </div>
+                <!-- Se rellena dinámicamente por JavaScript -->
             </div>
         </section>
     </main>

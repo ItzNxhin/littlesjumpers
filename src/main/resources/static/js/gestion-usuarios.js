@@ -544,9 +544,43 @@ class GestionUsuarios {
                         <div class="info-item-value">${estudiante.acudiente_nombre || 'N/A'}</div>
                     </div>
                 </div>
+                <div id="hv_container" style="margin-top:18px;"></div>
+                <div style="margin-top:12px; display:flex; gap:8px;">
+                    <button class="btn btn-secondary btn-sm" onclick="gestionUsuarios.cerrarModalConsultar()">Cerrar</button>
+                </div>
             `;
 
             document.getElementById('modalConsultar').classList.add('active');
+
+            // Cargar e incrustar la Hoja de Vida directamente en el modal
+            (async () => {
+                try {
+                    const r = await fetch(`/api/gestion/estudiantes/${estudiante.id}/hoja-vida`);
+                    if (!r.ok) return; // no mostrar si falla
+                    const hv = await r.json();
+                    const hvHtml = `
+                        <div class="section-header" style="margin-top:8px;"><h4>Hoja de Vida</h4></div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-item-label">Estado de Salud</div>
+                                <div class="info-item-value">${hv.estadoSalud || 'No registrado'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">Alergias</div>
+                                <div class="info-item-value">${hv.alergias || 'No registra'}</div>
+                            </div>
+                            <div class="info-item" style="grid-column: 1 / -1;">
+                                <div class="info-item-label">Notas de Aprendizaje</div>
+                                <div class="info-item-value">${hv.notasAprendizaje || 'Sin notas'}</div>
+                            </div>
+                        </div>
+                    `;
+                    const container = document.getElementById('hv_container');
+                    if (container) container.innerHTML = hvHtml;
+                } catch (err) {
+                    console.warn('No se pudo cargar Hoja de Vida inline', err);
+                }
+            })();
         } catch (error) {
             console.error('Error:', error);
             this.mostrarError('Error al cargar los datos del estudiante');
@@ -629,6 +663,8 @@ class GestionUsuarios {
         }
     }
 
+    
+
     cerrarModalConsultar() {
         document.getElementById('modalConsultar').classList.remove('active');
     }
@@ -700,6 +736,34 @@ class GestionUsuarios {
             `;
 
             document.getElementById('modalModificar').classList.add('active');
+            // Cargar Hoja de Vida y añadir campos al formulario de modificación (inline)
+            (async () => {
+                try {
+                    const r = await fetch(`/api/gestion/estudiantes/${this.selectedUsuarioId}/hoja-vida`);
+                    if (!r.ok) return;
+                    const hv = await r.json();
+                    const hvSection = `
+                        <hr style="margin:18px 0; border: 1px solid #e9ecef;">
+                        <h4>Hoja de Vida</h4>
+                        <div class="form-group">
+                            <label for="mod_hv_estadoSalud">Estado de Salud</label>
+                            <textarea id="mod_hv_estadoSalud" class="form-control" rows="2">${hv.estadoSalud || ''}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="mod_hv_alergias">Alergias</label>
+                            <textarea id="mod_hv_alergias" class="form-control" rows="2">${hv.alergias || ''}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="mod_hv_notas">Notas de Aprendizaje</label>
+                            <textarea id="mod_hv_notas" class="form-control" rows="4">${hv.notasAprendizaje || ''}</textarea>
+                        </div>
+                    `;
+                    const form = document.getElementById('formModificar');
+                    if (form) form.insertAdjacentHTML('beforeend', hvSection);
+                } catch (err) {
+                    console.warn('No se pudo cargar Hoja de Vida para edición', err);
+                }
+            })();
         } catch (error) {
             console.error('Error:', error);
             this.mostrarError('Error al cargar los datos del estudiante');
@@ -863,6 +927,29 @@ class GestionUsuarios {
 
             const data2 = await response.json();
             if (!response.ok) throw new Error('Error al actualizar' + data2.message);
+
+            // Si estaba editando un estudiante, también intentar actualizar la Hoja de Vida si los campos existen
+            if (this.selectedUsuarioType === 'estudiante') {
+                const hvEstadoEl = document.getElementById('mod_hv_estadoSalud');
+                if (hvEstadoEl) {
+                    const hvPayload = {
+                        estadoSalud: document.getElementById('mod_hv_estadoSalud').value,
+                        alergias: document.getElementById('mod_hv_alergias').value,
+                        notasAprendizaje: document.getElementById('mod_hv_notas').value
+                    };
+
+                    const hvResp = await fetch(`/api/gestion/estudiantes/${this.selectedUsuarioId}/hoja-vida`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(hvPayload)
+                    });
+
+                    if (!hvResp.ok) {
+                        const err = await hvResp.json().catch(() => ({}));
+                        throw new Error(err.message || 'Error al actualizar la Hoja de Vida');
+                    }
+                }
+            }
 
             this.mostrarExito('Usuario actualizado correctamente');
             this.cerrarModalModificar();

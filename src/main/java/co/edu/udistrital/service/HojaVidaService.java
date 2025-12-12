@@ -32,21 +32,19 @@ public class HojaVidaService {
     @Transactional
     public HojaVidaResponse obtenerOCrearPorEstudiante(Integer estudianteId) {
         try {
-            // Validar que el estudiante existe
-            Optional<Estudiante> estudianteOpt = estudianteRepository.findById(estudianteId);
-            if (estudianteOpt.isEmpty()) {
-                throw new RuntimeException("Estudiante no encontrado");
-            }
-
-            Estudiante estudiante = estudianteOpt.get();
+            Estudiante estudiante = estudianteRepository.findById(estudianteId)
+                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado"));
 
             // Buscar hoja de vida existente
             Optional<HojaVida> hojaVidaOpt = hojaVidaRepository.findByEstudianteId(estudianteId);
 
             HojaVida hojaVida;
             if (hojaVidaOpt.isEmpty()) {
-                // Si no existe, crear una nueva hoja de vida vacía
+                // Crear nueva HojaVida
                 hojaVida = new HojaVida(estudiante);
+                hojaVida.setAlergias("");
+                hojaVida.setNotasAprendizaje("");
+                hojaVida.setEstadoSalud("");
                 hojaVida = hojaVidaRepository.save(hojaVida);
             } else {
                 hojaVida = hojaVidaOpt.get();
@@ -54,8 +52,18 @@ public class HojaVidaService {
 
             return new HojaVidaResponse(hojaVida);
         } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
             throw new RuntimeException("Error al consultar hoja de vida", e);
         }
+    }
+
+    /**
+     * Obtiene la hoja de vida de un estudiante (sobrecarga que recibe la entidad).
+     * Si no existe, la crea automáticamente.
+     */
+    @Transactional
+    public HojaVidaResponse obtenerOCrearPorEstudiante(Estudiante estudiante) {
+        return obtenerOCrearPorEstudiante(estudiante.getId());
     }
 
     /**
@@ -67,12 +75,26 @@ public class HojaVidaService {
      */
     @Transactional
     public HojaVidaResponse actualizar(Integer estudianteId, HojaVidaRequest request) {
+        Estudiante estudiante = estudianteRepository.findById(estudianteId)
+            .orElseThrow(() -> new RuntimeException("Estudiante no encontrado"));
+        return actualizar(estudiante, request);
+    }
+
+    /**
+     * Actualiza la hoja de vida de un estudiante (sobrecarga que recibe la entidad)
+     *
+     * @param estudiante Entidad estudiante
+     * @param request Datos a actualizar
+     * @return HojaVidaResponse con los datos actualizados
+     */
+    @Transactional
+    public HojaVidaResponse actualizar(Estudiante estudiante, HojaVidaRequest request) {
         try {
             // Obtener o crear hoja de vida
-            obtenerOCrearPorEstudiante(estudianteId);
+            obtenerOCrearPorEstudiante(estudiante);
 
             // Buscar la entidad para actualizar
-            Optional<HojaVida> hojaVidaOpt = hojaVidaRepository.findByEstudianteId(estudianteId);
+            Optional<HojaVida> hojaVidaOpt = hojaVidaRepository.findByEstudianteId(estudiante.getId());
 
             if (hojaVidaOpt.isEmpty()) {
                 throw new RuntimeException("Error al actualizar hoja de vida");

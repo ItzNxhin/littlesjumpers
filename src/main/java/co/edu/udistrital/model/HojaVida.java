@@ -7,12 +7,11 @@ import jakarta.persistence.*;
 public class HojaVida {
 
     @Id
-    @Column(name = "estudiante_id")
-    private Integer estudianteId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "estudiante_id")
+    @OneToOne(optional = false)
+    @JoinColumn(name = "estudiante_id", unique = true, nullable = false)
     private Estudiante estudiante;
 
     @Column(name = "estado_salud", columnDefinition = "TEXT")
@@ -30,24 +29,22 @@ public class HojaVida {
 
     public HojaVida(Estudiante estudiante) {
         this.estudiante = estudiante;
-        this.estudianteId = estudiante.getId();
     }
 
     public HojaVida(Estudiante estudiante, String estadoSalud, String alergias, String notasAprendizaje) {
         this.estudiante = estudiante;
-        this.estudianteId = estudiante.getId();
         this.estadoSalud = estadoSalud;
         this.alergias = alergias;
         this.notasAprendizaje = notasAprendizaje;
     }
 
     // Getters and Setters
-    public Integer getEstudianteId() {
-        return estudianteId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setEstudianteId(Integer estudianteId) {
-        this.estudianteId = estudianteId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Estudiante getEstudiante() {
@@ -56,7 +53,6 @@ public class HojaVida {
 
     public void setEstudiante(Estudiante estudiante) {
         this.estudiante = estudiante;
-        this.estudianteId = estudiante.getId();
     }
 
     public String getEstadoSalud() {
