@@ -18,10 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AutenticacionService {
 
-    //Repositorios
+    //Repositorios de cuentas
     @Autowired
     private CuentaRepository cuentaRepository;
 
+    //Repositorios de usuarios
     @Autowired
     private UsuariosRepository usuariosRepository;
 
