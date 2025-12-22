@@ -66,6 +66,14 @@ Facilitar la gestión administrativa de jardines infantiles mediante la digitali
 - Notificaciones de aceptación/rechazo
 - Sistema configurable vía SMTP Gmail
 
+### Gestión Académica Avanzada
+- **Sistema de Calificaciones:** Registro y seguimiento de notas por estudiante
+- **Hojas de Vida:** Documentación completa del desarrollo de cada estudiante
+- **Boletines:** Generación y emisión de reportes académicos
+- **Registros de Logros:** Seguimiento de hitos y competencias alcanzadas
+- **Citaciones:** Notificación a acudientes para reuniones y seguimiento
+- **Observaciones:** Notas detalladas del progreso académico
+
 ---
 
 ## Arquitectura
@@ -87,10 +95,14 @@ LittleJumpers implementa una **arquitectura en capas** basada en el patrón **MV
 │  │ Autenticacion│ │ Aspirantes   │ │  Entrevistas   │  │
 │  │   Service   │ │   Service    │ │    Service     │  │
 │  └─────────────┘ └──────────────┘ └─────────────────┘  │
-│  ┌─────────────┐ ┌──────────────┐                      │
-│  │   Email     │ │   Cuentas    │                      │
-│  │  Service    │ │   Service    │                      │
-│  └─────────────┘ └──────────────┘                      │
+│  ┌─────────────┐ ┌──────────────┐ ┌──────────────┐     │
+│  │   Email     │ │   Cuentas    │ │Calificaciones│     │
+│  │  Service    │ │   Service    │ │   Service    │     │
+│  └─────────────┘ └──────────────┘ └──────────────┘     │
+│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐    │
+│  │ HojaVida     │ │  Boletines   │ │ Citaciones   │    │
+│  │  Service     │ │   Service    │ │   Service    │    │
+│  └──────────────┘ └──────────────┘ └──────────────┘    │
 └─────────────────────────────────────────────────────────┘
                         ↓
 ┌─────────────────────────────────────────────────────────┐
@@ -249,12 +261,14 @@ littlesjumpers/
 ```
 
 **Estadísticas del Proyecto:**
-- **43 archivos Java**
-- **~2,272 líneas de código**
-- **8 entidades de dominio**
-- **15+ endpoints API REST**
-- **5 repositorios**
-- **6 servicios de negocio**
+- **95 archivos Java**
+- **~7,507 líneas de código**
+- **15 entidades de dominio**
+- **27 DTOs** (request/response)
+- **14+ repositorios**
+- **16 servicios de negocio**
+- **6 vistas HTML Thymeleaf**
+- **10 scripts JavaScript**
 
 ---
 
@@ -408,6 +422,84 @@ public class Grupo {
 }
 ```
 
+#### **Calificación**
+```java
+@Entity
+public class Calificacion {
+    @Id
+    private Integer id;
+
+    @ManyToOne
+    private Estudiante estudiante;
+
+    private String materia;
+
+    private Double nota;
+
+    private LocalDateTime fecha;
+
+    private String observaciones;
+}
+```
+
+#### **HojaVida**
+```java
+@Entity
+public class HojaVida {
+    @Id
+    private Integer id;
+
+    @OneToOne
+    private Estudiante estudiante;
+
+    private String descripcion;
+
+    private String logros;
+
+    private String competencias;
+
+    private LocalDateTime fechaCreacion;
+}
+```
+
+#### **Boletín**
+```java
+@Entity
+public class Boletin {
+    @Id
+    private Integer id;
+
+    @OneToOne
+    private Estudiante estudiante;
+
+    private String contenido;
+
+    private LocalDate periodo;
+
+    private LocalDateTime fechaGeneracion;
+}
+```
+
+#### **Citación**
+```java
+@Entity
+public class Citacion {
+    @Id
+    private Integer id;
+
+    @ManyToOne
+    private Acudiente acudiente;
+
+    private String asunto;
+
+    private LocalDateTime fechaCitacion;
+
+    private String observaciones;
+
+    private boolean asistio;
+}
+```
+
 ### Enumeraciones del Dominio
 
 | Enum | Valores | Descripción |
@@ -494,6 +586,19 @@ public class Grupo {
   "fechaEntrevista": "2025-12-15T10:00:00"
 }
 ```
+
+#### Gestión Académica
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| `GET` | `/api/calificaciones` | Obtener todas las calificaciones |
+| `POST` | `/api/calificaciones` | Crear nueva calificación |
+| `PUT` | `/api/calificaciones/{id}` | Actualizar calificación |
+| `GET` | `/api/hojas-vida/{estudianteId}` | Obtener hoja de vida del estudiante |
+| `POST` | `/api/hojas-vida` | Crear registro en hoja de vida |
+| `GET` | `/api/boletines` | Listar boletines académicos |
+| `GET` | `/api/citaciones` | Obtener citaciones |
+| `POST` | `/api/citaciones` | Crear nueva citación |
 
 ### Vistas Web (Thymeleaf)
 
@@ -667,40 +772,6 @@ Contraseña: admin123
 | **Admin** | `/admin/dashboard` | - Ver todos los aspirantes<br>- Programar entrevistas<br>- Aceptar/rechazar estudiantes<br>- Gestionar todo el sistema |
 | **Acudiente** | `/acudiente/menu` | - Inscribir estudiantes<br>- Ver estado de solicitudes<br>- Actualizar información |
 | **Docente** | `/docente/menu` | - Ver grupos asignados<br>- Gestionar estudiantes del grupo<br>- Reportes académicos |
-
----
-
-## Estado del Proyecto
-
-> **IMPORTANTE:** Este proyecto está actualmente **en desarrollo activo** y **NO ha sido completado** aún. Muchas funcionalidades están en proceso de implementación.
-
-### Funcionalidades Completadas
-
-| Módulo | Estado | Descripción |
-|--------|--------|-------------|
-| Autenticación | ✅ 90% | Login funcional, falta hashing de contraseñas |
-| Registro de Aspirantes | ✅ 100% | Completamente funcional |
-| Gestión de Entrevistas | ✅ 95% | Funcional, falta mejorar emails |
-| Envío de Emails | ⚠️ 70% | Funcional pero sin templates HTML ni async |
-| Dashboard Admin | ⚠️ 60% | Vista básica, falta completar secciones |
-| Panel Acudiente | ⚠️ 40% | En desarrollo |
-| Panel Docente | ❌ 20% | Estructura básica |
-| Sistema de Grupos | ⚠️ 50% | Modelo creado, falta integración |
-| Tests Automatizados | ❌ 0% | Pendiente |
-| Documentación API | ❌ 0% | Pendiente |
-
-**Leyenda:**
-- ✅ Completado y funcional
-- ⚠️ Parcialmente implementado
-- ❌ No iniciado
-
-### Problemas Conocidos
-
-1. **Seguridad:** Las contraseñas se almacenan en texto plano (CRÍTICO)
-2. **Emails:** No hay retry automático si falla el envío
-3. **Validación:** Falta validación exhaustiva en algunos formularios
-4. **Responsive:** El diseño no está optimizado para móviles
-5. **Performance:** No hay paginación en listados grandes
 
 ---
 
