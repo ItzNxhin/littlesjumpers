@@ -1,6 +1,6 @@
 # LittleJumpers 🏫
 
-> Sistema de Gestión Educativa para Jardín Infantil - Universidad Distrital Francisco José de Caldas
+> Sistema de Gestión Educativa para Jardín Infantil - Universidad Distrital Francisco José de Caldasa
 
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.7-brightgreen.svg)](https://spring.io/projects/spring-boot)
